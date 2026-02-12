@@ -1,0 +1,57 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Http\Requests\StoreStockRequest;
+use App\Http\Resources\StockLogResource;
+use App\Models\StockLog;
+use App\Services\StockService;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+
+class StockController extends Controller
+{
+    public function __construct(
+        private StockService $stockService
+    ) {}
+
+    /**
+     * Store new stock addition
+     */
+    public function store(StoreStockRequest $request): JsonResponse
+    {
+        try {
+            $material = $this->stockService->addStock($request->validated());
+
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Stock added successfully.',
+                'data' => [
+                    'material_id' => $material->id,
+                    'current_stock' => $material->current_stock,
+                ],
+            ], 201);
+
+        } catch (\Exception $e) {
+            \Log::error('Stock addition failed: '.$e->getMessage());
+
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Failed to add stock.',
+            ], 500);
+        }
+    }
+
+    /**
+     * Get stock logs history
+     */
+    public function index(): AnonymousResourceCollection
+    {
+        $logs = StockLog::with('material')
+            ->orderBy('created_at', 'desc')
+            ->take(50)
+            ->get();
+
+        return StockLogResource::collection($logs);
+    }
+}

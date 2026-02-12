@@ -1,0 +1,152 @@
+/* Gudang small styles */
+.log-scroll {
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+/* --- Table Refinements (Serious & Compact) --- */
+.table-gudang thead th {
+    font-weight: 700;
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    letter-spacing: 0.5px;
+    color: #495057;
+    background-color: #f8f9fa;
+    border-bottom: 2px solid #e9ecef;
+    padding: 12px 16px;
+}
+
+.table-gudang tbody td {
+    padding: 10px 16px;
+    vertical-align: middle;
+    font-size: 0.9rem;
+    border-bottom: 1px solid #f1f3f5;
+}
+
+.table-gudang tbody tr:hover {
+    background-color: #fafafa !important;
+}
+
+/* Kolom Harga: Monospace & Netral */
+.col-price {
+    font-family: "Segoe UI Mono", "Roboto Mono", monospace;
+    color: #6c757d;
+    font-weight: 500;
+    white-space: nowrap;
+}
+
+.col-price .price-display-group {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+}
+
+.col-price .price-display {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+}
+
+.price-edit-row {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.price-edit-row .input-group {
+    max-width: 210px;
+}
+
+/* --- UX Mobile: Data Table to Card Stack --- */
+@media (max-width: 768px) {
+    /* Sembunyikan Header Tabel */
+    .table-responsive thead {
+        display: none;
+    }
+    /* Ubah Baris jadi Kartu */
+    .table-responsive tbody tr {
+        display: block;
+        margin-bottom: 1rem;
+        background: #fff;
+        border: 1px solid #e0e0e0;
+        border-radius: 12px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        padding: 15px;
+    }
+    /* Tampilkan Data Vertikal (Label : Value) */
+    .table-responsive tbody td {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0.5rem 0;
+        border: none;
+        border-bottom: 1px dashed #eee;
+    }
+    .table-responsive tbody td:last-child {
+        border-bottom: none;
+    }
+
+    /* Inject Label via CSS (sesuai urutan kolom) */
+    .table-responsive tbody td:nth-of-type(1)::before {
+        content: "Bahan";
+        font-weight: bold;
+        color: #666;
+    }
+    .table-responsive tbody td:nth-of-type(2)::before {
+        content: "Harga/Unit";
+        font-weight: bold;
+        color: #666;
+    }
+    .table-responsive tbody td:nth-of-type(3)::before {
+        content: "Stok";
+        font-weight: bold;
+        color: #666;
+    }
+    .table-responsive tbody td:nth-of-type(4)::before {
+        content: "Satuan";
+        font-weight: bold;
+        color: #666;
+    }
+    .table-responsive tbody td:nth-of-type(5)::before {
+        content: "Status";
+        font-weight: bold;
+        color: #666;
+    }
+}
+
+.log-grid {
+    align-items: stretch;
+}
+
+.log-card {
+    border: 1px solid #eef1f4;
+    border-radius: 12px;
+}
+
+.log-card .card-header {
+    font-size: 0.85rem;
+    letter-spacing: 0.3px;
+    text-transform: uppercase;
+    padding: 0.65rem 0.9rem;
+    border-bottom: 1px solid #f1f3f5;
+}
+
+.log-card .list-group-item {
+    padding: 0.6rem 0.9rem;
+    font-size: 0.85rem;
+}
+
+.log-card .list-group-item small {
+    display: block;
+    line-height: 1.35;
+}
+
+.log-scroll {
+    max-height: 280px;
+}
+
+@media (max-width: 992px) {
+    .log-scroll {
+        max-height: 320px;
+    }
+}

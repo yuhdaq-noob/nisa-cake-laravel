@@ -1,0 +1,216 @@
+/**
+ * Point of Sale (POS) module.
+ * Handles product selection, shopping cart, and order processing.
+ */
+
+const apiProducts = "/api/products";
+const apiOrder = "/api/buat-pesanan";
+
+let cart = [];
+let productsDB = [];
+
+const formatRupiah = (angka) =>
+    new Intl.NumberFormat("id-ID", {
+        style: "currency",
+        currency: "IDR",
+        minimumFractionDigits: 0,
+    }).format(angka);
+
+// Error message display helpers
+const showError = (elementId, message) => {
+    const el = document.getElementById(elementId);
+    if (el) {
+        el.innerText = message;
+        el.classList.remove("d-none");
+    }
+};
+
+const hideError = (elementId) => {
+    const el = document.getElementById(elementId);
+    if (el) el.classList.add("d-none");
+};
+
+document.addEventListener("DOMContentLoaded", async () => {
+    try {
+        const response = await fetch(apiProducts);
+        const rawData = await response.json();
+        if (Array.isArray(rawData)) {
+            productsDB = rawData;
+        } else if (rawData.data && Array.isArray(rawData.data)) {
+            productsDB = rawData.data;
+        } else {
+            productsDB = [];
+        }
+
+        const datalist = document.getElementById("product_list");
+        datalist.innerHTML = "";
+
+        if (productsDB.length === 0) {
+            showError("error_product_input", "No products available.");
+        }
+
+        productsDB.forEach((p) => {
+            const option = document.createElement("option");
+            option.value = `${p.name} - ${formatRupiah(p.selling_price)}`;
+            datalist.appendChild(option);
+        });
+    } catch (error) {
+        console.error("Error:", error);
+        showError(
+            "error_product_input",
+            "Failed to load products. Check your connection.",
+        );
+    }
+
+    // Clear error messages on user input
+    document
+        .getElementById("customer_name")
+        ?.addEventListener("input", () => hideError("error_customer_name"));
+    document
+        .getElementById("product_input")
+        ?.addEventListener("input", () => hideError("error_product_input"));
+    document
+        .getElementById("quantity")
+        ?.addEventListener("input", () => hideError("error_product_input"));
+});
+
+function tambahKeKeranjang() {
+    hideError("error_product_input");
+
+    const inputVal = document.getElementById("product_input").value;
+    const qty = parseInt(document.getElementById("quantity").value);
+
+    if (!inputVal || isNaN(qty) || qty < 1) {
+        showError(
+            "error_product_input",
+            "Select a product and valid quantity.",
+        );
+        return;
+    }
+
+    // Find product by input string format
+    const product = productsDB.find(
+        (p) => `${p.name} - ${formatRupiah(p.selling_price)}` === inputVal,
+    );
+
+    if (!product) {
+        showError(
+            "error_product_input",
+            "Product not found. Select from the available list.",
+        );
+        return;
+    }
+
+    const productId = product.id;
+    const existingItem = cart.find((item) => item.product_id == productId);
+
+    if (existingItem) {
+        existingItem.quantity += qty;
+    } else {
+        cart.push({
+            product_id: productId,
+            name: product.name,
+            price: product.selling_price,
+            quantity: qty,
+        });
+    }
+    renderCart();
+
+    // Reset input for next product
+    document.getElementById("product_input").value = "";
+    document.getElementById("quantity").value = "1";
+}
+
+function renderCart() {
+    const tbody = document.getElementById("tabelKeranjang");
+    const totalDisplay = document.getElementById("totalDisplay");
+
+    if (cart.length === 0) {
+        tbody.innerHTML = `<tr>
+                <td colspan="5" class="text-center py-5 text-muted">
+                    <span class="d-block mb-1 fw-medium">Cart is empty</span>
+                    <small style="font-size: 0.75rem; opacity: 0.7;">Select products to begin.</small>
+                </td>
+            </tr>`;
+        totalDisplay.innerText = "Rp 0";
+        return;
+    }
+
+    let html = "";
+    let grandTotal = 0;
+
+    cart.forEach((item, index) => {
+        const priceNum = Number(item.price) || 0;
+        const qtyNum = Number(item.quantity) || 0;
+        const subtotal = priceNum * qtyNum;
+        grandTotal += subtotal;
+
+        html += `
+            <tr>
+                <td><span class="fw-medium text-dark">${item.name}</span></td>
+                <td class="text-end text-muted">${formatRupiah(priceNum)}</td>
+                <td class="text-center">${item.quantity}</td>
+                <td class="text-end fw-bold text-dark">${formatRupiah(subtotal)}</td>
+                <td class="text-center"><button class="btn btn-sm btn-link text-danger p-0 text-decoration-none" onclick="hapusItem(${index})"><i class="bi bi-trash"></i></button></td>
+            </tr>
+        `;
+    });
+
+    tbody.innerHTML = html;
+    totalDisplay.innerText = formatRupiah(grandTotal);
+}
+
+function hapusItem(index) {
+    cart.splice(index, 1);
+    renderCart();
+}
+
+async function prosesTransaksi() {
+    hideError("error_customer_name");
+    hideError("error_checkout");
+
+    const customerName = document.getElementById("customer_name").value;
+    if (!customerName) {
+        showError("error_customer_name", "Customer name is required.");
+        return;
+    }
+    if (cart.length === 0) {
+        showError("error_checkout", "Cart is empty. Add products first.");
+        return;
+    }
+
+    const payload = { customer_name: customerName, items: cart };
+
+    try {
+        const response = await fetch(apiOrder, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload),
+        });
+        const result = await response.json();
+
+        if (response.ok) {
+            alert(
+                "Order processed successfully.\nEstimated Profit: " +
+                    formatRupiah(result.profit),
+            );
+            location.reload();
+        } else {
+            showError(
+                "error_checkout",
+                "Failed: " + (result.message || "An error occurred."),
+            );
+        }
+    } catch (error) {
+        showError(
+            "error_checkout",
+            "System error occurred during transaction. Please check the console.",
+        );
+        console.error(error);
+    }
+}
+
+// Expose functions to global scope so inline onclick in Blade works when bundled by Vite
+window.tambahKeKeranjang = tambahKeKeranjang;
+window.hapusItem = hapusItem;
+window.prosesTransaksi = prosesTransaksi;
