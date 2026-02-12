@@ -11,7 +11,9 @@ use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\Product;
 use App\Models\StockLog;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class OrderService
 {
@@ -25,12 +27,22 @@ class OrderService
     {
         // Calculate total needs for all items
         $totalNeeds = $this->calculateTotalNeeds($data['items']);
-
-        // Validate stock availability for all materials
-        $this->validateStockAvailability($totalNeeds);
+        $materialIds = array_keys($totalNeeds);
 
         // Create order in transaction
-        return DB::transaction(function () use ($data) {
+        return DB::transaction(function () use ($data, $totalNeeds, $materialIds) {
+            $materials = collect();
+
+            if (count($materialIds) > 0) {
+                $materials = Material::whereIn('id', $materialIds)
+                    ->lockForUpdate()
+                    ->get()
+                    ->keyBy('id');
+
+                // Validate stock availability for all materials using locked rows
+                $this->validateStockAvailability($materials, $totalNeeds);
+            }
+
             $totalPrice = 0;
             $totalHPP = 0;
             $orderItemsData = [];
@@ -39,7 +51,7 @@ class OrderService
                 $product = Product::with('materials')->findOrFail($item['product_id']);
 
                 $subtotal = $product->selling_price * $item['quantity'];
-                $subhpp = $product->production_cost * $item['quantity'];
+                $subhpp = $this->calculateRealTimeHPP($product, $item['quantity']);
 
                 $totalPrice += $subtotal;
                 $totalHPP += $subhpp;
@@ -54,9 +66,10 @@ class OrderService
                 if ($product->materials->count() > 0) {
                     foreach ($product->materials as $material) {
                         $qtyNeeded = $material->pivot->quantity_needed * $item['quantity'];
+                        $lockedMaterial = $materials->get($material->id) ?? $material;
 
                         // Decrement stock
-                        $material->decrement('current_stock', $qtyNeeded);
+                        $lockedMaterial->decrement('current_stock', $qtyNeeded);
 
                         // Log stock deduction
                         StockLog::create([
@@ -73,7 +86,7 @@ class OrderService
             $order = Order::create([
                 'customer_name' => $data['customer_name'],
                 'order_date' => now(),
-                'status' => OrderStatus::COMPLETED->value,
+                'status' => OrderStatus::PENDING->value,
                 'total_price' => $totalPrice,
                 'total_hpp' => $totalHPP,
             ]);
@@ -88,8 +101,34 @@ class OrderService
                 ]);
             }
 
+            Log::channel('business')->info('Order created', [
+                'order_id' => $order->id,
+                'customer_name' => $order->customer_name,
+                'total_price' => $order->total_price,
+                'total_hpp' => $order->total_hpp,
+            ]);
+
             return $order;
         });
+    }
+
+    /**
+     * Calculate real-time HPP from BOM and current material prices
+     */
+    private function calculateRealTimeHPP(Product $product, int $quantity): float
+    {
+        $hppPerUnit = 0.0;
+
+        foreach ($product->materials as $material) {
+            $quantityNeeded = (float) $material->pivot->quantity_needed;
+            $currentPrice = (float) ($material->price_per_unit_baku ?? $material->price_per_unit ?? 0);
+
+            $hppPerUnit += $quantityNeeded * $currentPrice;
+        }
+
+        $hppPerUnit += (float) ($product->overhead_cost_per_unit ?? 0);
+
+        return $hppPerUnit * $quantity;
     }
 
     /**
@@ -125,10 +164,10 @@ class OrderService
      * @throws InsufficientStockException
      * @throws MaterialNotFoundException
      */
-    private function validateStockAvailability(array $totalNeeds): void
+    private function validateStockAvailability(Collection $materials, array $totalNeeds): void
     {
         foreach ($totalNeeds as $materialId => $qtyNeeded) {
-            $material = Material::find($materialId);
+            $material = $materials->get($materialId);
 
             if (! $material) {
                 throw new MaterialNotFoundException($materialId);

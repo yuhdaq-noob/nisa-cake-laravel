@@ -263,31 +263,33 @@ Material → Material_Price_Logs
 
 ## 🔌 API Endpoints
 
-### Authentication (Web)
+### Authentication (API)
 
-- `POST /login` - Login user
-- `POST /logout` - Logout user
-- `GET /api/user` - Profil user (Sanctum)
+- Public: `POST /api/login` (login), `POST /api/register` (register user baru)
+- Protected: `POST /api/logout`, `GET /api/user` (profil user)
 
-### Products & Materials
+### Products & Materials (auth:sanctum)
 
 - `GET /api/products` - List produk dengan BOM
 - `GET /api/materials` - List material dengan stok
 - `PATCH /api/materials/{material}/price` - Update harga per satuan baku
 - `GET /api/materials/price-history` - Riwayat perubahan harga
 
-### Orders
+### Orders (auth:sanctum)
 
 - `POST /api/buat-pesanan` - Buat pesanan (auto stock deduction)
+- `GET /api/orders` - List pesanan
+- `GET /api/orders/{order}` - Detail pesanan
+- `PATCH /api/orders/{order}/complete` - Tandai selesai
 - `GET /api/reports` - List pesanan dengan profit
 
-### Manajemen Stok
+### Manajemen Stok (auth:sanctum)
 
 - `POST /api/stocks/add` - Tambah stok material
 - `POST /api/materials/reduce` - Kurangi stok (manual adjustment)
 - `GET /api/stocks/history` - Riwayat log stok
 
-**Catatan**: Endpoint API saat ini tidak diproteksi autentikasi, kecuali `/api/user` (Sanctum). Tambahkan middleware `auth:sanctum` jika diperlukan.
+**Catatan**: Kecuali `POST /api/login` dan `POST /api/register`, seluruh endpoint API di atas sudah diproteksi middleware `auth:sanctum` (Bearer Token dari Sanctum).
 
 ---
 

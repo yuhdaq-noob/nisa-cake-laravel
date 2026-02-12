@@ -3,11 +3,19 @@
  * Handles material stock tracking, history logs, and restock operations.
  */
 
+import "./bootstrap";
+import "./api.js";
+
 const apiMaterials = "/api/materials";
 const apiHistory = "/api/stocks/history";
 const apiAddStock = "/api/stocks/add";
 const apiMaterialPrice = "/api/materials";
 const apiPriceHistory = "/api/materials/price-history";
+
+const getAuthHeaders = () =>
+    typeof window !== "undefined" && window.getAuthHeaders
+        ? window.getAuthHeaders()
+        : {};
 
 const priceFormatter = new Intl.NumberFormat("id-ID");
 const materialMap = new Map();
@@ -110,7 +118,16 @@ document.addEventListener("DOMContentLoaded", () => {
  */
 async function loadMaterials() {
     try {
-        const response = await fetch(apiMaterials);
+        const response = await fetch(apiMaterials, {
+            headers: {
+                ...getAuthHeaders(),
+            },
+        });
+        if (response.status === 401) {
+            alert("Sesi login telah berakhir. Silakan login kembali.");
+            window.location.href = "/login";
+            return;
+        }
         let materials = await response.json();
 
         // Handle both array and object with .data property (Resource format)
@@ -171,7 +188,16 @@ async function loadMaterials() {
  */
 async function loadHistory() {
     try {
-        const response = await fetch(apiHistory);
+        const response = await fetch(apiHistory, {
+            headers: {
+                ...getAuthHeaders(),
+            },
+        });
+        if (response.status === 401) {
+            alert("Sesi login telah berakhir. Silakan login kembali.");
+            window.location.href = "/login";
+            return;
+        }
         let logs = await response.json();
 
         // Handle both array and object with .data property (Resource format)
@@ -240,9 +266,17 @@ if (formRestock) {
         try {
             const response = await fetch(apiAddStock, {
                 method: "POST",
-                headers: { "Content-Type": "application/json" },
+                headers: {
+                    "Content-Type": "application/json",
+                    ...getAuthHeaders(),
+                },
                 body: JSON.stringify(data),
             });
+            if (response.status === 401) {
+                alert("Sesi login telah berakhir. Silakan login kembali.");
+                window.location.href = "/login";
+                return;
+            }
 
             const result = await response.json();
 
@@ -349,12 +383,20 @@ function attachPriceEditHandler() {
                     `${apiMaterialPrice}/${materialId}/price`,
                     {
                         method: "PATCH",
-                        headers: { "Content-Type": "application/json" },
+                        headers: {
+                            "Content-Type": "application/json",
+                            ...getAuthHeaders(),
+                        },
                         body: JSON.stringify({
                             price_per_unit_baku: pricePerBaku,
                         }),
                     },
                 );
+                if (response.status === 401) {
+                    alert("Sesi login telah berakhir. Silakan login kembali.");
+                    window.location.href = "/login";
+                    return;
+                }
 
                 const result = await response.json();
 
@@ -392,7 +434,16 @@ async function loadPriceHistory() {
     }
 
     try {
-        const response = await fetch(apiPriceHistory);
+        const response = await fetch(apiPriceHistory, {
+            headers: {
+                ...getAuthHeaders(),
+            },
+        });
+        if (response.status === 401) {
+            alert("Sesi login telah berakhir. Silakan login kembali.");
+            window.location.href = "/login";
+            return;
+        }
         if (!response.ok) {
             list.innerHTML =
                 '<li class="list-group-item text-center text-muted">Riwayat harga belum tersedia.</li>';

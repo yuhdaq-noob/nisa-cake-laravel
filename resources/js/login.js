@@ -3,6 +3,9 @@
  * Handles authentication form submission and user login.
  */
 
+import "./bootstrap";
+import "./api.js";
+
 document.addEventListener("DOMContentLoaded", () => {
     const passEl = document.getElementById("passwordInput");
     if (passEl) passEl.focus();
@@ -38,6 +41,18 @@ if (loginForm) {
             const result = await response.json();
 
             if (response.ok) {
+                const username = formData.get("username");
+                const password = formData.get("password");
+                if (window.apiLogin && username && password) {
+                    try {
+                        await window.apiLogin(
+                            String(username),
+                            String(password),
+                        );
+                    } catch (apiError) {
+                        console.warn("API token fetch failed:", apiError);
+                    }
+                }
                 if (overlay) {
                     overlay.style.opacity = "1";
                     overlay.style.pointerEvents = "all";
