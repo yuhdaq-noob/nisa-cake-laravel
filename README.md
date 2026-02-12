@@ -392,7 +392,7 @@ Jika Anda menemukan bug atau memiliki pertanyaan:
 
 - **Issues**: [GitHub Issues](https://github.com/yuhdaq-noob/nisa-cake-laravel/issues)
 - **Documentation**: [DOKUMENTASI_TEKNIS.md](DOKUMENTASI_TEKNIS.md)
-- **Email**: _(Optional)_
+- **Email**: _yuhdaq@gmail.com_
 
 ---
 
