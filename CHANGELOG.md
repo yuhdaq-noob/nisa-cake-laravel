@@ -104,5 +104,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
-[Unreleased]: https://github.com/yourusername/nisa-app/compare/v1.0.0...HEAD
-[1.0.0]: https://github.com/yourusername/nisa-app/releases/tag/v1.0.0
+[Unreleased]: https://github.com/yuhdaq-noob/nisa-cake-laravel/compare/v1.0.0...HEAD
+[1.0.0]: https://github.com/yuhdaq-noob/nisa-cake-laravel/releases/tag/v1.0.0
+

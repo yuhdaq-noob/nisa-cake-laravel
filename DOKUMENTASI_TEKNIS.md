@@ -824,7 +824,7 @@ POST /api/buat-pesanan
 
 ```bash
 # 1. Clone repository
-git clone https://github.com/yuhdaq-noob/nisa-app.git
+git clone https://github.com/yuhdaq-noob/nisa-cake-laravel.git
 cd nisa-app
 
 # 2. Install dependencies

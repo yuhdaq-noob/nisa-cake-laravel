@@ -73,7 +73,7 @@
 1. **Clone Repository**
 
     ```bash
-    git clone https://github.com/yuhdaq-noob/nisa-app.git
+    git clone https://github.com/yuhdaq-noob/nisa-cake-laravel.git
     cd nisa-app
     ```
 
@@ -390,9 +390,9 @@ Developed as part of undergraduate thesis (Tugas Akhir/Skripsi).
 
 Jika Anda menemukan bug atau memiliki pertanyaan:
 
-- **Issues**: [GitHub Issues](https://github.com/yuhdaq-noob/nisa-app/issues)
+- **Issues**: [GitHub Issues](https://github.com/yuhdaq-noob/nisa-cake-laravel/issues)
 - **Documentation**: [DOKUMENTASI_TEKNIS.md](DOKUMENTASI_TEKNIS.md)
-- **Email**: [your.email@example.com] _(Optional)_
+- **Email**: _(Optional)_
 
 ---
 
