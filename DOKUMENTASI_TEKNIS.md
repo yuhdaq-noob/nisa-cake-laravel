@@ -12,7 +12,7 @@
 | ------------- | --------------------------------------------- |
 | Nama Aplikasi | NISA-APP (Nisa Cake Management System)        |
 | Versi         | 1.0.0                                         |
-| Tanggal Rilis | 12 Februari 2026                              |
+| Tanggal Rilis | 11 Februari 2026                              |
 | Jenis Dokumen | Spesifikasi Teknis & Dokumentasi Implementasi |
 | Tujuan        | Dokumentasi untuk Tugas Akhir/Skripsi         |
 
@@ -605,43 +605,43 @@ Hasil: Order diterima, stok dikurangi, log tercatat
 
 ### 14. API Endpoints
 
-**RESTful API Endpoints:**
+Semua endpoint berikut diproteksi `auth:sanctum` kecuali login/register (public). Gunakan Bearer Token dari Sanctum setelah login/register.
 
-### 14. API Endpoints
+#### Authentication (API)
 
-**RESTful API Endpoints:**
+| Method | Endpoint        | Auth  | Deskripsi             |
+| ------ | --------------- | ----- | --------------------- |
+| POST   | `/api/login`    | Tidak | Login user            |
+| POST   | `/api/register` | Tidak | Registrasi user baru  |
+| POST   | `/api/logout`   | Ya    | Logout user (Sanctum) |
+| GET    | `/api/user`     | Ya    | Profil user (Sanctum) |
 
-#### Authentication (Web Routes)
+#### Products & Materials (auth:sanctum)
 
-| Method | Endpoint    | Deskripsi    | Request Body           | Response           |
-| ------ | ----------- | ------------ | ---------------------- | ------------------ |
-| POST   | `/login`    | Login user   | `username`, `password` | Redirect + session |
-| POST   | `/logout`   | Logout user  | -                      | Redirect           |
-| GET    | `/api/user` | User profile | -                      | User JSON          |
+| Method | Endpoint                          | Deskripsi                    |
+| ------ | --------------------------------- | ---------------------------- |
+| GET    | `/api/products`                   | List produk dengan BOM       |
+| GET    | `/api/materials`                  | List material dengan stok    |
+| PATCH  | `/api/materials/{material}/price` | Update harga per satuan baku |
+| GET    | `/api/materials/price-history`    | Riwayat perubahan harga      |
 
-#### Products & Materials
+#### Orders (auth:sanctum)
 
-| Method | Endpoint                          | Deskripsi                    | Auth     |
-| ------ | --------------------------------- | ---------------------------- | -------- |
-| GET    | `/api/products`                   | List produk dengan BOM       | Optional |
-| GET    | `/api/materials`                  | List material dengan stok    | Optional |
-| PATCH  | `/api/materials/{material}/price` | Update harga per satuan baku | Required |
-| GET    | `/api/materials/price-history`    | Riwayat perubahan harga      | Optional |
+| Method | Endpoint                       | Auth |
+| ------ | ------------------------------ | ---- |
+| POST   | `/api/buat-pesanan`            | Ya   |
+| GET    | `/api/orders`                  | Ya   |
+| GET    | `/api/orders/{order}`          | Ya   |
+| PATCH  | `/api/orders/{order}/complete` | Ya   |
+| GET    | `/api/reports`                 | Ya   |
 
-#### Orders (Point of Sale)
+#### Manajemen Stok (auth:sanctum)
 
-| Method | Endpoint            | Deskripsi         | Request Body             | Response    |
-| ------ | ------------------- | ----------------- | ------------------------ | ----------- |
-| POST   | `/api/buat-pesanan` | Buat pesanan baru | `customer_name`, `items` | Order + 201 |
-| GET    | `/api/reports`      | Laporan penjualan | -                        | Order list  |
-
-#### Stock Management
-
-| Method | Endpoint                | Deskripsi                 | Request Body                    | Response    |
-| ------ | ----------------------- | ------------------------- | ------------------------------- | ----------- |
-| POST   | `/api/stocks/add`       | Tambah stok material      | `material_id`, `amount`, `desc` | Success msg |
-| POST   | `/api/materials/reduce` | Kurangi stok (adjustment) | `material_id`, `amount`, `desc` | Success msg |
-| GET    | `/api/stocks/history`   | Riwayat log stok          | `?material_id=X` (optional)     | Log list    |
+| Method | Endpoint                | Auth |
+| ------ | ----------------------- | ---- |
+| POST   | `/api/stocks/add`       | Ya   |
+| POST   | `/api/materials/reduce` | Ya   |
+| GET    | `/api/stocks/history`   | Ya   |
 
 **Request Example:**
 
@@ -703,13 +703,16 @@ Content-Type: application/json
 
 ### 15. Validasi & Error Handling
 
-| Method | Endpoint    | Deskripsi             |
-| ------ | ----------- | --------------------- |
-| POST   | `/login`    | Login user            |
-| POST   | `/logout`   | Logout user           |
-| GET    | `/api/user` | Profil user (Sanctum) |
+#### Autentikasi (API)
 
-### Products & Materials
+| Method | Endpoint        | Auth  | Deskripsi             |
+| ------ | --------------- | ----- | --------------------- |
+| POST   | `/api/login`    | Tidak | Login user            |
+| POST   | `/api/register` | Tidak | Registrasi user baru  |
+| POST   | `/api/logout`   | Ya    | Logout user (Sanctum) |
+| GET    | `/api/user`     | Ya    | Profil user (Sanctum) |
+
+#### Products & Materials (auth:sanctum)
 
 | Method | Endpoint                          | Deskripsi                    |
 | ------ | --------------------------------- | ---------------------------- |
@@ -718,22 +721,25 @@ Content-Type: application/json
 | PATCH  | `/api/materials/{material}/price` | Update harga per satuan baku |
 | GET    | `/api/materials/price-history`    | Riwayat perubahan harga      |
 
-### Orders
+#### Orders (auth:sanctum)
 
-| Method | Endpoint            | Auth  |
-| ------ | ------------------- | ----- |
-| POST   | `/api/buat-pesanan` | Tidak |
-| GET    | `/api/reports`      | Tidak |
+| Method | Endpoint                       | Auth |
+| ------ | ------------------------------ | ---- |
+| POST   | `/api/buat-pesanan`            | Ya   |
+| GET    | `/api/orders`                  | Ya   |
+| GET    | `/api/orders/{order}`          | Ya   |
+| PATCH  | `/api/orders/{order}/complete` | Ya   |
+| GET    | `/api/reports`                 | Ya   |
 
-### Manajemen Stok
+#### Manajemen Stok (auth:sanctum)
 
-| Method | Endpoint                | Auth  |
-| ------ | ----------------------- | ----- |
-| POST   | `/api/stocks/add`       | Tidak |
-| POST   | `/api/materials/reduce` | Tidak |
-| GET    | `/api/stocks/history`   | Tidak |
+| Method | Endpoint                | Auth |
+| ------ | ----------------------- | ---- |
+| POST   | `/api/stocks/add`       | Ya   |
+| POST   | `/api/materials/reduce` | Ya   |
+| GET    | `/api/stocks/history`   | Ya   |
 
-**Catatan**: Endpoint API saat ini belum diproteksi autentikasi, kecuali `/api/user` (Sanctum). Tambahkan middleware `auth:sanctum` jika diperlukan.
+**Catatan**: Semua endpoint API di atas diproteksi middleware `auth:sanctum` kecuali `POST /api/login` dan `POST /api/register`.
 
 ### Request Example
 

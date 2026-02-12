@@ -3,6 +3,9 @@
  * Handles report generation, filtering, and data visualization.
  */
 
+import "./bootstrap";
+import "./api.js";
+
 const apiUrl = "/api/reports";
 let allData = [];
 let myChart = null;
@@ -66,7 +69,17 @@ const isThisYear = (dateString) => {
 // Load and initialize report data on page load
 document.addEventListener("DOMContentLoaded", async () => {
     try {
-        const response = await fetch(apiUrl);
+        const response = await fetch(apiUrl, {
+            headers:
+                typeof window !== "undefined" && window.getAuthHeaders
+                    ? window.getAuthHeaders()
+                    : {},
+        });
+        if (response.status === 401) {
+            alert("Sesi login telah berakhir. Silakan login kembali.");
+            window.location.href = "/login";
+            return;
+        }
         let data = await response.json();
 
         // Handle both array and object with .data property (Resource format)

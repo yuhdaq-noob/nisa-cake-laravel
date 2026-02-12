@@ -3,11 +3,21 @@
  * Handles product selection, shopping cart, and order processing.
  */
 
+import "./bootstrap";
+import "./api.js";
+
 const apiProducts = "/api/products";
 const apiOrder = "/api/buat-pesanan";
+const apiCompleteOrder = "/api/orders";
+
+const getAuthHeaders = () =>
+    typeof window !== "undefined" && window.getAuthHeaders
+        ? window.getAuthHeaders()
+        : {};
 
 let cart = [];
 let productsDB = [];
+let lastOrderId = null;
 
 const formatRupiah = (angka) =>
     new Intl.NumberFormat("id-ID", {
@@ -32,7 +42,16 @@ const hideError = (elementId) => {
 
 document.addEventListener("DOMContentLoaded", async () => {
     try {
-        const response = await fetch(apiProducts);
+        const response = await fetch(apiProducts, {
+            headers: {
+                ...getAuthHeaders(),
+            },
+        });
+        if (response.status === 401) {
+            alert("Sesi login telah berakhir. Silakan login kembali.");
+            window.location.href = "/login";
+            return;
+        }
         const rawData = await response.json();
         if (Array.isArray(rawData)) {
             productsDB = rawData;
@@ -184,15 +203,37 @@ async function prosesTransaksi() {
     try {
         const response = await fetch(apiOrder, {
             method: "POST",
-            headers: { "Content-Type": "application/json" },
+            headers: {
+                "Content-Type": "application/json",
+                ...getAuthHeaders(),
+            },
             body: JSON.stringify(payload),
         });
+        if (response.status === 401) {
+            showError(
+                "error_checkout",
+                "Sesi login telah berakhir. Silakan login kembali.",
+            );
+            window.location.href = "/login";
+            return;
+        }
         const result = await response.json();
 
         if (response.ok) {
+            const profitValue =
+                result?.data?.profit ??
+                result?.profit ??
+                result?.data?.total_profit;
+            const createdOrderId = result?.data?.id ?? result?.id ?? null;
+
+            if (createdOrderId) {
+                lastOrderId = createdOrderId;
+                showCompleteBox(createdOrderId);
+            }
+
             alert(
                 "Order processed successfully.\nEstimated Profit: " +
-                    formatRupiah(result.profit),
+                    formatRupiah(Number(profitValue) || 0),
             );
             location.reload();
         } else {
@@ -208,6 +249,51 @@ async function prosesTransaksi() {
         );
         console.error(error);
     }
+}
+
+function showCompleteBox(orderId) {
+    const box = document.getElementById("orderCompleteBox");
+    const label = document.getElementById("lastOrderId");
+    if (label) label.innerText = `#${orderId}`;
+    if (box) box.classList.remove("d-none");
+}
+
+async function completeLastOrder() {
+    if (!lastOrderId) return;
+
+    try {
+        const response = await fetch(
+            `${apiCompleteOrder}/${lastOrderId}/complete`,
+            {
+                method: "PATCH",
+                headers: {
+                    ...getAuthHeaders(),
+                },
+            },
+        );
+        if (response.status === 401) {
+            alert("Sesi login telah berakhir. Silakan login kembali.");
+            window.location.href = "/login";
+            return;
+        }
+        if (response.ok) {
+            alert(`Pesanan #${lastOrderId} berhasil ditandai selesai.`);
+            lastOrderId = null;
+            const box = document.getElementById("orderCompleteBox");
+            if (box) box.classList.add("d-none");
+        } else {
+            const result = await response.json().catch(() => ({}));
+            alert(result.message || "Gagal menandai pesanan selesai.");
+        }
+    } catch (error) {
+        console.error(error);
+        alert("Terjadi kesalahan saat memperbarui status pesanan.");
+    }
+}
+
+const completeButton = document.getElementById("btnCompleteOrder");
+if (completeButton) {
+    completeButton.addEventListener("click", completeLastOrder);
 }
 
 // Expose functions to global scope so inline onclick in Blade works when bundled by Vite

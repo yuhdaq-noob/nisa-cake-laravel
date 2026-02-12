@@ -7,6 +7,7 @@ use App\Exceptions\InsufficientStockException;
 use App\Models\Material;
 use App\Models\StockLog;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class StockService
 {
@@ -27,6 +28,14 @@ class StockService
             // Increment stock
             $material = Material::findOrFail($data['material_id']);
             $material->increment('current_stock', $data['amount']);
+
+            Log::channel('business')->info('Stock added', [
+                'material_id' => $material->id,
+                'material_name' => $material->name,
+                'amount' => $data['amount'],
+                'description' => $data['description'],
+                'current_stock' => $material->current_stock,
+            ]);
 
             return $material;
         });
@@ -60,6 +69,14 @@ class StockService
                 'type' => StockLogType::OUT->value,
                 'amount' => $data['amount'],
                 'description' => '[MANUAL] '.$data['description'],
+            ]);
+
+            Log::channel('business')->info('Stock reduced', [
+                'material_id' => $material->id,
+                'material_name' => $material->name,
+                'amount' => $data['amount'],
+                'description' => $data['description'],
+                'current_stock' => $material->current_stock,
             ]);
 
             return $material;

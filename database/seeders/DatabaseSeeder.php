@@ -21,6 +21,9 @@ class DatabaseSeeder extends Seeder
         DB::table('product_materials')->truncate();
         DB::table('products')->truncate();
         DB::table('materials')->truncate();
+        DB::table('stock_logs')->truncate();
+        DB::table('material_price_logs')->truncate();
+        DB::table('personal_access_tokens')->truncate();
         DB::table('users')->truncate(); // Reset user juga biar tidak duplikat
 
         // 3. Nyalakan lagi Foreign Key
@@ -40,7 +43,9 @@ class DatabaseSeeder extends Seeder
         $this->call([
             MasterDataSeeder::class,
             OrderSeeder::class,
-            StockSeeder::class,  // Uncomment jiika ingin generate dummy orders
+            // StockSeeder akan mengisi stok awal (dummy). Hapus dari daftar
+            // jika tidak ingin ada stok awal.
+            StockSeeder::class,
         ]);
     }
 }
