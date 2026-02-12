@@ -1,4 +1,4 @@
-# NISA-APP 🍰
+# NISA-APP
 
 **Sistem Manajemen Toko Kue dengan Inventori & BOM (Bill of Materials)**
 
@@ -8,16 +8,16 @@
 
 ---
 
-## 📋 Tentang Proyek
+## Tentang Proyek
 
 **NISA-APP** adalah aplikasi web untuk mengelola toko kue (Nisa Cake) yang mencakup:
 
-- 🏪 **Point of Sale (POS)** - Kasir untuk pembuatan pesanan
-- 📦 **Manajemen Inventori** - Kelola stok bahan baku dengan sistem BOM
-- 📊 **Laporan Penjualan** - Pelacakan omzet, HPP, dan laba
-- 🔔 **Notifikasi Stok Minimum** - Peringatan saat stok menipis
-- 🧾 **Pencatatan Stok** - Jejak audit perubahan stok
-- 💸 **Pencatatan Harga** - Jejak audit perubahan harga bahan
+- **Point of Sale (POS)** - Kasir untuk pembuatan pesanan
+- **Manajemen Inventori** - Kelola stok bahan baku dengan sistem BOM
+- **Laporan Penjualan** - Pelacakan omzet, HPP, dan laba
+- **Notifikasi Stok Minimum** - Peringatan saat stok menipis
+- **Pencatatan Stok** - Jejak audit perubahan stok
+- **Pencatatan Harga** - Jejak audit perubahan harga bahan
 
 ### Fitur Utama
 
@@ -30,7 +30,7 @@
 
 ---
 
-## 🚀 Tech Stack
+## Tech Stack
 
 ### Backend
 
@@ -59,7 +59,7 @@
 
 ---
 
-## 📦 Instalasi
+## Instalasi
 
 ### Requirements
 
@@ -137,7 +137,7 @@
 
 ---
 
-## 🔐 Default Login
+## Default Login
 
 ```
 Username: owner
@@ -146,7 +146,7 @@ Password: 666666
 
 ---
 
-## 📁 Project Structure
+## Project Structure
 
 ```
 nisa-app/
@@ -175,7 +175,7 @@ nisa-app/
 
 ---
 
-## 📚 Dokumentasi
+## Dokumentasi
 
 ### Dokumentasi Lengkap
 
@@ -195,7 +195,7 @@ Lihat **[CHANGELOG.md](CHANGELOG.md)** untuk detail riwayat versi dan perubahan.
 
 ---
 
-## 🧪 Testing
+## Testing
 
 ```bash
 # Run all tests
@@ -207,7 +207,7 @@ php artisan test --filter=OrderServiceTest
 
 ---
 
-## 🛠️ Development
+## Development
 
 ### Run Development Server
 
@@ -237,7 +237,7 @@ php artisan view:clear
 
 ---
 
-## 📊 Database Schema
+## Database Schema
 
 ### Main Tables
 
@@ -261,7 +261,7 @@ Material → Material_Price_Logs
 
 ---
 
-## 🔌 API Endpoints
+## API Endpoints
 
 ### Authentication (Web)
 
@@ -291,7 +291,7 @@ Material → Material_Price_Logs
 
 ---
 
-## 🎯 Business Logic
+## Business Logic
 
 ### Alur Pesanan
 
@@ -321,7 +321,7 @@ Total Kebutuhan:
 
 ---
 
-## 🔒 Security Features
+## Security Features
 
 - ✅ CSRF Protection
 - ✅ Session-based Authentication
@@ -332,7 +332,7 @@ Total Kebutuhan:
 
 ---
 
-## 📈 Performance
+## Performance
 
 - Database indexing on foreign keys
 - Eager loading untuk prevent N+1 queries
@@ -341,7 +341,7 @@ Total Kebutuhan:
 
 ---
 
-## 🤝 Contributing
+## Contributing
 
 Kontribusi sangat diterima! Jika Anda ingin berkontribusi:
 
@@ -359,13 +359,13 @@ Kontribusi sangat diterima! Jika Anda ingin berkontribusi:
 
 ---
 
-## 📝 License
+## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ---
 
-## 👥 Author
+## Author
 
 Developed as part of undergraduate thesis (Tugas Akhir/Skripsi).
 
@@ -377,7 +377,7 @@ Developed as part of undergraduate thesis (Tugas Akhir/Skripsi).
 
 ---
 
-## 🙏 Acknowledgments
+## Acknowledgments
 
 - [Laravel](https://laravel.com) - The PHP framework for web artisans
 - [Tailwind CSS](https://tailwindcss.com) - A utility-first CSS framework
@@ -386,7 +386,7 @@ Developed as part of undergraduate thesis (Tugas Akhir/Skripsi).
 
 ---
 
-## 📞 Support
+## Support
 
 Jika Anda menemukan bug atau memiliki pertanyaan:
 
