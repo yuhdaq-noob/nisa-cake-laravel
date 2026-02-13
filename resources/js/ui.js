@@ -30,13 +30,49 @@ function bindDrawer() {
 function openModal(id) {
     const modal = document.getElementById(id);
     if (!modal) return;
-    modal.classList.remove("hidden", "opacity-0", "pointer-events-none");
+    const backdrop = modal.querySelector(".modal-backdrop");
+    const panel = modal.querySelector(".modal-panel");
+
+    // Pastikan modal terlihat terlebih dahulu agar transisi bisa berjalan
+    modal.classList.remove("hidden");
+
+    requestAnimationFrame(() => {
+        modal.classList.remove("opacity-0", "pointer-events-none");
+        modal.classList.add("pointer-events-auto");
+
+        if (backdrop) {
+            backdrop.classList.remove("opacity-0");
+        }
+
+        if (panel) {
+            panel.classList.remove("opacity-0", "translate-y-4", "scale-95");
+            panel.classList.add("translate-y-0", "scale-100");
+        }
+    });
 }
 
 function closeModal(id) {
     const modal = document.getElementById(id);
     if (!modal) return;
-    modal.classList.add("hidden");
+    const backdrop = modal.querySelector(".modal-backdrop");
+    const panel = modal.querySelector(".modal-panel");
+
+    modal.classList.add("opacity-0", "pointer-events-none");
+    modal.classList.remove("pointer-events-auto");
+
+    if (backdrop) {
+        backdrop.classList.add("opacity-0");
+    }
+
+    if (panel) {
+        panel.classList.add("opacity-0", "translate-y-4", "scale-95");
+        panel.classList.remove("translate-y-0", "scale-100");
+    }
+
+    // Tunggu durasi transisi sebelum benar-benar menyembunyikan elemen
+    setTimeout(() => {
+        modal.classList.add("hidden");
+    }, 200);
 }
 
 function bindModals() {

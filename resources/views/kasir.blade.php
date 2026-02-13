@@ -38,13 +38,19 @@
         </div>
 
         <div class="lg:col-span-3 space-y-4">
-            <div class="bg-white rounded-2xl shadow-card border border-slate-100 h-full">
-                <div class="px-5 py-4 border-b border-slate-100 flex items-center justify-between">
-                    <h6 class="text-sm font-semibold text-slate-900">Keranjang Belanja</h6>
-                    <span id="totalDisplay" class="text-lg font-bold text-amber-800">Rp 0</span>
+            <div class="bg-white rounded-2xl shadow-card border border-slate-100 h-full flex flex-col">
+                <div class="px-5 py-4 border-b border-slate-100 flex items-center justify-between gap-3">
+                    <div>
+                        <p class="text-[0.67rem] uppercase tracking-[0.2em] text-slate-400">Keranjang</p>
+                        <h6 class="text-sm font-semibold text-slate-900">Ringkasan Belanja</h6>
+                    </div>
+                    <div class="text-right">
+                        <p class="text-[0.7rem] text-slate-400">Total pembayaran</p>
+                        <p id="totalDisplay" class="text-lg font-bold text-amber-800 leading-tight">Rp 0</p>
+                    </div>
                 </div>
-                <div class="px-2">
-                    <div class="overflow-x-auto" style="max-height: 320px;">
+                <div class="px-2 flex-1">
+                    <div class="overflow-x-auto max-h-[320px]">
                         <table class="min-w-full table-basic text-sm">
                             <thead class="sticky top-0">
                                 <tr>
@@ -63,12 +69,17 @@
                 </div>
                 <div class="px-5 py-4 space-y-3 border-t border-slate-100 bg-slate-50 rounded-b-2xl">
                     <div id="error_checkout" class="hidden text-center text-sm font-semibold text-rose-700"></div>
-                    <button onclick="prosesTransaksi()" class="btn-prim w-full justify-center text-base">
+                    <button
+                        id="btnBayarSekarang"
+                        type="button"
+                        onclick="prosesTransaksi()"
+                        class="btn-prim w-full inline-flex items-center justify-center gap-2 text-base shadow-card focus:outline-none focus:ring-2 focus:ring-amber-300 focus:ring-offset-2 focus:ring-offset-slate-50 transition-all"
+                    >
                         <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16" class="w-4 h-4">
                             <path d="M0 4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V4zm2-1a1 1 0 0 0-1 1v1h14V4a1 1 0 0 0-1-1H2zm13 4H1v5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V7z"/>
                             <path d="M2 10a1 1 0 0 1 1-1h1a1 1 0 0 1 1 1v1a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1v-1z"/>
                         </svg>
-                        Bayar Sekarang
+                        <span id="btnBayarSekarangLabel">Bayar Sekarang</span>
                     </button>
                     <div id="orderCompleteBox" class="hidden flex flex-col md:flex-row md:items-center md:justify-between gap-2 border border-slate-200 rounded-xl p-3 bg-white">
                         <div class="text-sm text-slate-600">

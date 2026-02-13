@@ -13,7 +13,7 @@
                 <i class="bi bi-cart-plus-fill"></i>
                 <span>Belanja Bahan</span>
             </button>
-            <button type="button" class="inline-flex items-center gap-2 rounded-lg border border-slate-200 px-4 py-2.5 font-semibold text-slate-700 bg-white shadow-sm hover:border-slate-300" data-modal-open="modalKurangStok">
+            <button type="button" class="btn-secondary" data-modal-open="modalKurangStok">
                 <i class="bi bi-exclamation-triangle-fill text-amber-600"></i>
                 <span>Catat Kerusakan</span>
             </button>
@@ -32,7 +32,7 @@
         </div>
     @endif
 
-    <div class="grid gap-4 lg:grid-cols-3">
+    <div class="grid gap-4 lg:grid-cols-3 items-start">
         <div class="lg:col-span-2 space-y-4">
             <div class="bg-white rounded-2xl shadow-card border border-slate-100">
                 <div class="px-5 py-4 border-b border-slate-100 flex items-center justify-between">
@@ -59,7 +59,7 @@
         </div>
 
         <div class="space-y-4">
-            <div class="bg-white rounded-2xl shadow-card border border-slate-100 h-full">
+            <div class="bg-white rounded-2xl shadow-card border border-slate-100">
                 <div class="px-5 py-4 border-b border-slate-100">
                     <p class="text-sm font-semibold text-slate-900">Riwayat Keluar/Masuk</p>
                 </div>
@@ -70,7 +70,7 @@
                 </div>
             </div>
 
-            <div class="bg-white rounded-2xl shadow-card border border-slate-100 h-full">
+            <div class="bg-white rounded-2xl shadow-card border border-slate-100">
                 <div class="px-5 py-4 border-b border-slate-100">
                     <p class="text-sm font-semibold text-slate-900">Riwayat Perubahan Harga</p>
                 </div>
@@ -84,10 +84,10 @@
     </div>
 
     <!-- Modal Restock -->
-    <div id="modalRestock" class="fixed inset-0 z-50 hidden">
-        <div class="absolute inset-0 bg-slate-900/50" data-modal-close="modalRestock"></div>
+    <div id="modalRestock" class="modal fixed inset-0 z-50 hidden opacity-0 pointer-events-none transition-opacity duration-200 ease-out">
+        <div class="modal-backdrop absolute inset-0 bg-slate-900/50 opacity-0 transition-opacity duration-200 ease-out" data-modal-close="modalRestock"></div>
         <div class="relative z-10 flex items-center justify-center min-h-screen px-4">
-            <div class="w-full max-w-lg bg-white rounded-2xl shadow-card border border-slate-100">
+            <div class="modal-panel w-full max-w-lg bg-white rounded-2xl shadow-card border border-slate-100 transform transition-all duration-200 ease-out translate-y-4 scale-95 opacity-0">
                 <div class="flex items-center justify-between px-5 py-4 border-b border-slate-100">
                     <div>
                         <p class="text-sm font-semibold text-slate-900">Input Belanja Bahan</p>
@@ -123,10 +123,10 @@
     </div>
 
     <!-- Modal Catat Kerusakan -->
-    <div id="modalKurangStok" class="fixed inset-0 z-50 hidden">
-        <div class="absolute inset-0 bg-slate-900/50" data-modal-close="modalKurangStok"></div>
+    <div id="modalKurangStok" class="modal fixed inset-0 z-50 hidden opacity-0 pointer-events-none transition-opacity duration-200 ease-out">
+        <div class="modal-backdrop absolute inset-0 bg-slate-900/50 opacity-0 transition-opacity duration-200 ease-out" data-modal-close="modalKurangStok"></div>
         <div class="relative z-10 flex items-center justify-center min-h-screen px-4">
-            <div class="w-full max-w-lg bg-white rounded-2xl shadow-card border border-slate-100">
+            <div class="modal-panel w-full max-w-lg bg-white rounded-2xl shadow-card border border-slate-100 transform transition-all duration-200 ease-out translate-y-4 scale-95 opacity-0">
                 <div class="flex items-center justify-between px-5 py-4 border-b border-slate-100">
                     <div>
                         <p class="text-sm font-semibold text-rose-700">Catat Pengurangan Stok</p>

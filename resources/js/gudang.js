@@ -27,6 +27,27 @@ function getBaseUnitConfig(unitValue) {
     return BASE_UNIT_CONFIG[key] || null;
 }
 
+function parseRupiahInput(value) {
+    if (!value) return NaN;
+
+    let cleaned = value.toString().trim();
+
+    cleaned = cleaned.replace(/\s+/g, "");
+
+    if (cleaned.includes(",") && cleaned.includes(".")) {
+        cleaned = cleaned.replace(/\./g, "").replace(",", ".");
+    } else {
+        if (cleaned.includes(".") && !cleaned.includes(",")) {
+            cleaned = cleaned.replace(/\./g, "");
+        }
+        if (cleaned.includes(",") && !cleaned.includes(".")) {
+            cleaned = cleaned.replace(",", ".");
+        }
+    }
+
+    return Number(cleaned);
+}
+
 function resolveDisplayPrice(mat) {
     const unitValue = (mat.unit || "").trim();
     const baseUnitValue = (mat.unit_baku || "").trim();
@@ -57,32 +78,12 @@ function getEditConfig(mat) {
     if (!unitValue) {
         return { isEditable: false };
     }
-
-    const baseUnitConfig = getBaseUnitConfig(unitValue);
-    const baseUnitValue = (mat.unit_baku || "").trim();
-    let editUnit = baseUnitValue || unitValue;
-    let basePrice = Number(mat.price_per_unit_baku ?? 0);
-
-    if (baseUnitConfig) {
-        editUnit = baseUnitConfig.unit;
-        if (
-            !mat.price_per_unit_baku &&
-            mat.price_per_unit !== null &&
-            mat.price_per_unit !== undefined
-        ) {
-            basePrice = Number(mat.price_per_unit) * baseUnitConfig.factor;
-        }
-    } else if (
-        mat.price_per_unit_baku === null ||
-        mat.price_per_unit_baku === undefined
-    ) {
-        basePrice = Number(mat.price_per_unit ?? 0);
-    }
+    const { displayUnit, displayPrice } = resolveDisplayPrice(mat);
 
     return {
         isEditable: true,
-        basePrice,
-        editUnit,
+        basePrice: Number(displayPrice ?? 0),
+        editUnit: displayUnit || unitValue,
     };
 }
 
@@ -211,36 +212,46 @@ async function loadHistory() {
 
         if (logs.length === 0) {
             list.innerHTML =
-                '<li class="px-5 py-4 text-center text-slate-500">Tidak ada riwayat transaksi.</li>';
+                '<li class="px-5 py-4 text-center text-slate-500 text-sm">Tidak ada riwayat transaksi.</li>';
             return;
         }
 
         let html = "";
         logs.forEach((log) => {
-            let textClass =
-                log.type === "in" ? "text-emerald-600" : "text-rose-600";
-            let sign = log.type === "in" ? "+" : "-";
+            const isIn = log.type === "in";
+            const textClass = isIn ? "text-emerald-600" : "text-rose-600";
+            const sign = isIn ? "+" : "-";
+            const badgeText = isIn ? "Masuk" : "Keluar";
+            const badgeColor = isIn
+                ? "bg-emerald-50 text-emerald-700 border-emerald-100"
+                : "bg-rose-50 text-rose-700 border-rose-100";
 
-            let date = new Date(log.created_at).toLocaleString("id-ID", {
+            const date = new Date(log.created_at).toLocaleString("id-ID", {
                 day: "numeric",
                 month: "short",
                 hour: "2-digit",
                 minute: "2-digit",
             });
 
+            const materialName =
+                (log.material && (log.material.name || log.material)) || "-";
+            const description = log.description || "-";
+
             html += `
-                <li class="px-5 py-3 flex items-start justify-between gap-3">
-                    <div>
-                        <div class="font-semibold text-slate-900">${
-                            log.material.name || log.material
-                        }</div>
-                        <p class="text-xs text-slate-500">${
-                            log.description || "-"
-                        }</p>
+                <li class="group px-5 py-3 flex items-center justify-between gap-3 hover:bg-slate-50/80 transition-colors">
+                    <div class="flex-1 min-w-0 flex items-start gap-3">
+                        <span class="mt-1 inline-flex h-8 w-8 items-center justify-center rounded-full bg-slate-100 text-slate-500 group-hover:bg-amber-50 group-hover:text-amber-700">
+                            ${isIn ? '<i class="bi bi-arrow-down-circle-fill"></i>' : '<i class="bi bi-arrow-up-circle-fill"></i>'}
+                        </span>
+                        <div class="min-w-0">
+                            <div class="font-semibold text-slate-900 truncate">${materialName}</div>
+                            <p class="mt-0.5 text-xs text-slate-500 truncate">${description}</p>
+                        </div>
                     </div>
-                    <div class="text-right text-sm">
-                        <span class="font-bold ${textClass}">${sign}${log.amount}</span><br>
-                        <span class="text-slate-500 text-xs">${date}</span>
+                    <div class="shrink-0 text-right text-xs">
+                        <span class="inline-flex items-center justify-center rounded-full border px-2 py-0.5 text-[0.68rem] font-semibold uppercase tracking-wide ${badgeColor}">${badgeText}</span>
+                        <div class="mt-1 text-sm font-bold ${textClass}">${sign}${log.amount}</div>
+                        <div class="mt-0.5 text-slate-400">${date}</div>
                     </div>
                 </li>
             `;
@@ -340,6 +351,7 @@ function attachPriceEditHandler() {
                     <button type="button" class="btn-cancel-price px-3 py-2 rounded-lg border border-slate-200 text-xs font-semibold text-slate-700" data-material-id="${materialId}" title="Batal">
                         Batal
                     </button>
+                    <p class="w-full text-[11px] text-slate-400 mt-1">Contoh input: 35000 atau 35.000 (keduanya berarti Rp 35.000/${editConfig.editUnit}).</p>
                 </div>
             `;
 
@@ -368,7 +380,7 @@ function attachPriceEditHandler() {
             }
 
             const rawValue = input.value.trim();
-            const pricePerBaku = Number(rawValue);
+            const pricePerBaku = parseRupiahInput(rawValue);
 
             if (!rawValue || Number.isNaN(pricePerBaku) || pricePerBaku <= 0) {
                 alert("Harga harus berupa angka dan lebih dari 0.");
@@ -446,7 +458,7 @@ async function loadPriceHistory() {
         }
         if (!response.ok) {
             list.innerHTML =
-                '<li class="px-5 py-4 text-center text-slate-500">Riwayat harga belum tersedia.</li>';
+                '<li class="px-5 py-4 text-center text-slate-500 text-sm">Riwayat harga belum tersedia.</li>';
             return;
         }
 
@@ -462,7 +474,7 @@ async function loadPriceHistory() {
 
         if (logs.length === 0) {
             list.innerHTML =
-                '<li class="px-5 py-4 text-center text-slate-500">Belum ada perubahan harga.</li>';
+                '<li class="px-5 py-4 text-center text-slate-500 text-sm">Belum ada perubahan harga.</li>';
             return;
         }
 
@@ -478,19 +490,22 @@ async function loadPriceHistory() {
                 minute: "2-digit",
             });
 
+            const name = log.material?.name || "-";
+
             html += `
-                <li class="px-5 py-3 flex items-start justify-between gap-3">
-                    <div>
-                        <div class="font-semibold text-slate-900">${
-                            log.material?.name || "-"
-                        }</div>
-                        <p class="text-xs text-slate-500">Rp ${formatNumber(
-                            oldPrice,
-                        )}/${unitBaku} -> Rp ${formatNumber(
-                            newPrice,
-                        )}/${unitBaku}</p>
+                <li class="group px-5 py-3 flex items-center justify-between gap-3 hover:bg-slate-50/80 transition-colors">
+                    <div class="flex-1 min-w-0">
+                        <div class="font-semibold text-slate-900 truncate">${name}</div>
+                        <p class="mt-0.5 text-xs text-slate-500">
+                            <span class="inline-flex items-center rounded-full bg-slate-100 px-2 py-0.5 text-[0.68rem] font-semibold text-slate-700 mr-1">Sebelum</span>
+                            Rp ${formatNumber(oldPrice)}/${unitBaku}
+                        </p>
+                        <p class="mt-0.5 text-xs text-slate-500">
+                            <span class="inline-flex items-center rounded-full bg-emerald-50 px-2 py-0.5 text-[0.68rem] font-semibold text-emerald-700 mr-1">Sesudah</span>
+                            Rp ${formatNumber(newPrice)}/${unitBaku}
+                        </p>
                     </div>
-                    <div class="text-right text-xs text-slate-500">${date}</div>
+                    <div class="shrink-0 text-right text-xs text-slate-400">${date}</div>
                 </li>
             `;
         });

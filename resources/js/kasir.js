@@ -174,9 +174,20 @@ async function prosesTransaksi() {
         return;
     }
 
+    const payButton = document.getElementById("btnBayarSekarang");
+    const payLabel = document.getElementById("btnBayarSekarangLabel");
+
     const payload = { customer_name: customerName, items: cart };
 
     try {
+        if (payButton) {
+            payButton.disabled = true;
+            payButton.classList.add("opacity-75", "cursor-not-allowed");
+        }
+        if (payLabel) {
+            payLabel.innerText = "Memproses...";
+        }
+
         const response = await fetch(apiOrder, {
             method: "POST",
             headers: {
@@ -224,6 +235,14 @@ async function prosesTransaksi() {
             "System error occurred during transaction. Please check the console.",
         );
         console.error(error);
+    } finally {
+        if (payButton) {
+            payButton.disabled = false;
+            payButton.classList.remove("opacity-75", "cursor-not-allowed");
+        }
+        if (payLabel) {
+            payLabel.innerText = "Bayar Sekarang";
+        }
     }
 }
 

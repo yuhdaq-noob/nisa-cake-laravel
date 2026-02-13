@@ -48,6 +48,37 @@ a {
     box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.25);
 }
 
+.btn-secondary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    background-color: #ffffff;
+    color: var(--text-main);
+    border-radius: 0.5rem;
+    padding: 0.6rem 1.2rem;
+    font-weight: 600;
+    border: 1px solid #e5e7eb;
+    box-shadow: 0 2px 6px rgba(15, 23, 42, 0.03);
+    transition:
+        background-color 0.15s ease,
+        border-color 0.15s ease,
+        box-shadow 0.15s ease,
+        transform 0.15s ease;
+}
+
+.btn-secondary:hover {
+    background-color: #f9fafb;
+    border-color: #d1d5db;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 10px rgba(15, 23, 42, 0.08);
+}
+
+.btn-secondary:active {
+    transform: translateY(1px) scale(0.99);
+    box-shadow: inset 0 2px 4px rgba(15, 23, 42, 0.2);
+}
+
 .table-basic th,
 .table-basic td {
     padding: 0.9rem 1rem;

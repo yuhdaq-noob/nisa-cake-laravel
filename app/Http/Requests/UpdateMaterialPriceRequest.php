@@ -22,7 +22,7 @@ class UpdateMaterialPriceRequest extends FormRequest
     {
         return [
             'price_per_unit_baku.required' => 'Harga per kg wajib diisi.',
-            'price_per_unit_baku.numeric' => 'Harga harus berupa angka.',
+            'price_per_unit_baku.numeric' => 'Harga harus berupa angka (contoh: 35000 untuk Rp 35.000).',
             'price_per_unit_baku.min' => 'Harga minimal 0.01.',
         ];
     }
