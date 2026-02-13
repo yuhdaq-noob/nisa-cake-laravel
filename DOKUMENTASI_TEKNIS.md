@@ -18,7 +18,7 @@
 
 ---
 
-## 📖 Daftar Isi
+## Daftar Isi
 
 ### I. PENDAHULUAN
 
@@ -105,22 +105,22 @@ Aplikasi yang dikembangkan memiliki ruang lingkup sebagai berikut:
 
 **Fitur Yang Dikembangkan:**
 
-- ✅ Manajemen bahan baku (CRUD materials)
-- ✅ Manajemen produk dengan BOM
-- ✅ Point of Sale (POS) untuk kasir
-- ✅ Pengurangan stok otomatis saat order
-- ✅ Pencatatan riwayat stok (audit trail)
-- ✅ Pencatatan riwayat harga bahan
-- ✅ Laporan penjualan dengan analisis profit
-- ✅ Notifikasi stok minimum
-- ✅ User authentication
+- Manajemen bahan baku (CRUD materials)
+- Manajemen produk dengan BOM
+- Point of Sale (POS) untuk kasir
+- Pengurangan stok otomatis saat order
+- Pencatatan riwayat stok (audit trail)
+- Pencatatan riwayat harga bahan
+- Laporan penjualan dengan analisis profit
+- Notifikasi stok minimum
+- User authentication
 
 **Fitur Yang Tidak Dikembangkan:**
 
-- ❌ Sistem pembayaran online/payment gateway
-- ❌ Integrasi dengan perangkat hardware POS (barcode scanner, cash drawer)
-- ❌ Manajemen multi-cabang
-- ❌ CRM (Customer Relationship Management)
+- Sistem pembayaran online/payment gateway
+- Integrasi dengan perangkat hardware POS (barcode scanner, cash drawer)
+- Manajemen multi-cabang
+- CRM (Customer Relationship Management)
 
 ### 5. Manfaat Penelitian
 

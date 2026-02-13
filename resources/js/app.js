@@ -9,3 +9,8 @@ import "./login.js";
 import "./gudang.js";
 import "./kasir.js";
 import "./laporan.js";
+import { initUiLayer } from "./ui.js";
+
+document.addEventListener("DOMContentLoaded", () => {
+    initUiLayer();
+});

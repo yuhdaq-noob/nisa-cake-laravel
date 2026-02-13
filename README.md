@@ -12,21 +12,21 @@
 
 **NISA-APP** adalah aplikasi web untuk mengelola toko kue (Nisa Cake) yang mencakup:
 
-- **Point of Sale (POS)** - Kasir untuk pembuatan pesanan
-- **Manajemen Inventori** - Kelola stok bahan baku dengan sistem BOM
-- **Laporan Penjualan** - Pelacakan omzet, HPP, dan laba
-- **Notifikasi Stok Minimum** - Peringatan saat stok menipis
-- **Pencatatan Stok** - Jejak audit perubahan stok
-- **Pencatatan Harga** - Jejak audit perubahan harga bahan
+- Point of Sale (POS) untuk kasir
+- Manajemen inventori berbasis Bill of Materials (BOM)
+- Laporan penjualan dengan informasi omzet, HPP, dan laba
+- Notifikasi stok minimum saat persediaan menipis
+- Pencatatan perubahan stok (audit trail)
+- Pencatatan perubahan harga bahan baku
 
 ### Fitur Utama
 
-✅ **Bill of Materials (BOM)** - Sistem resep untuk menghitung kebutuhan bahan per produk
-✅ **Auto Stock Deduction** - Pengurangan stok otomatis saat pesanan dibuat
-✅ **Transaction Safety** - Database transaction untuk konsistensi data
-✅ **Custom Exceptions** - Error handling yang informatif
-✅ **API Resources** - Response format yang konsisten
-✅ **Service Layer** - Separation of concerns untuk maintainability
+- Bill of Materials (BOM) untuk perhitungan kebutuhan bahan per produk
+- Pengurangan stok otomatis saat pesanan dibuat (auto stock deduction)
+- Transaction safety dengan database transaction untuk menjaga konsistensi data
+- Custom exceptions untuk error handling yang informatif
+- API Resources untuk response format yang konsisten
+- Service layer untuk memisahkan business logic dan meningkatkan maintainability
 
 ---
 
@@ -45,7 +45,7 @@
 - **Vite** 7.x (Build Tool)
 - **Tailwind CSS** 4.0 (Styling)
 - **Axios** 1.11 (HTTP Client)
-- **Vanilla JavaScript** (Interactivity)
+- **Vanilla JavaScript** (Interactivity, custom UI helpers)
 
 ### Development Tools
 
@@ -163,9 +163,18 @@ nisa-app/
 │   ├── migrations/         # Database schema
 │   └── seeders/            # Data seeders
 ├── resources/
-│   ├── css/                # Tailwind styles
-│   ├── js/                 # Frontend JavaScript
-│   └── views/              # Blade templates
+│   ├── css/
+│   │   ├── app.css         # Tailwind base + global theme (layout, kartu, tabel)
+│   │   ├── login-tailwind.css # Styling khusus halaman login
+│   │   └── legacy/         # Stylesheet lama (gudang/kasir/laporan/login sebelum migrasi Tailwind)
+│   ├── js/
+│   │   ├── app.js          # Entry Vite, menginisialisasi UI layer & modul halaman
+│   │   ├── ui.js           # Helper interaksi UI (drawer, modal, dropdown)
+│   │   ├── utils.js        # Helper umum (format Rupiah, tanggal, error state)
+│   │   ├── gudang.js       # Logika halaman gudang (stok & harga)
+│   │   ├── kasir.js        # Logika halaman kasir (POS)
+│   │   └── laporan.js      # Logika halaman laporan keuangan (tabel + chart)
+│   └── views/              # Blade templates (layouts, components, pages)
 ├── routes/
 │   ├── api.php             # API routes
 │   └── web.php             # Web routes
@@ -209,7 +218,7 @@ php artisan test --filter=OrderServiceTest
 
 ## Development
 
-### Run Development Server
+### Menjalankan Development Server
 
 ```bash
 # Terminal 1: PHP Server
@@ -325,12 +334,12 @@ Total Kebutuhan:
 
 ## Security Features
 
-- ✅ CSRF Protection
-- ✅ Session-based Authentication
-- ✅ Password Hashing (bcrypt)
-- ✅ SQL Injection Prevention (Eloquent ORM)
-- ✅ XSS Protection (Blade escaping)
-- ✅ Form Request Validation
+- CSRF protection
+- Session-based authentication
+- Password hashing (bcrypt)
+- SQL injection prevention (Eloquent ORM)
+- XSS protection (Blade escaping)
+- Form Request validation
 
 ---
 

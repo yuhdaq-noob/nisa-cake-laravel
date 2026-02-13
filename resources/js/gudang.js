@@ -6,6 +6,7 @@
 import "./bootstrap";
 import "./api.js";
 import { getAuthHeaders, formatNumber } from "./utils.js";
+import { closeModal } from "./ui.js";
 
 const apiMaterials = "/api/materials";
 const apiHistory = "/api/stocks/history";
@@ -89,7 +90,7 @@ function buildPriceCellHtml(mat) {
     const { displayUnit, displayPrice } = resolveDisplayPrice(mat);
     const editConfig = getEditConfig(mat);
     const editButton = editConfig.isEditable
-        ? `<button type="button" class="btn btn-sm btn-link text-primary text-decoration-none p-0 btn-edit-price" data-material-id="${mat.id}" title="Ubah harga"><i class="bi bi-pencil-square"></i></button>`
+        ? `<button type="button" class="btn-edit-price inline-flex items-center gap-1 text-xs font-semibold text-amber-800 hover:text-amber-900" data-material-id="${mat.id}" title="Ubah harga"><i class="bi bi-pencil-square"></i><span>Ubah</span></button>`
         : "";
 
     return `
@@ -102,6 +103,7 @@ function buildPriceCellHtml(mat) {
 
 // Load inventory data on page initialization
 document.addEventListener("DOMContentLoaded", () => {
+    if (!document.getElementById("tabelStok")) return;
     loadMaterials();
     loadHistory();
     loadPriceHistory();
@@ -145,26 +147,27 @@ async function loadMaterials() {
 
             // Determine status indicator
             let statusIcon =
-                '<i class="bi bi-check-circle-fill text-success opacity-75"></i>';
-            let statusText = '<span class="text-muted ms-1">Optimal</span>';
+                '<i class="bi bi-check-circle-fill text-emerald-600"></i>';
+            let statusText = '<span class="text-slate-600">Optimal</span>';
 
             if (mat.current_stock < mat.min_stock_level) {
-                statusIcon = '<i class="bi bi-x-circle-fill text-danger"></i>';
+                statusIcon =
+                    '<i class="bi bi-x-circle-fill text-rose-600"></i>';
                 statusText =
-                    '<span class="text-danger fw-medium ms-1">Critical</span>';
+                    '<span class="text-rose-700 font-semibold">Critical</span>';
             } else if (mat.current_stock < mat.min_stock_level * 2) {
                 statusIcon =
-                    '<i class="bi bi-exclamation-circle-fill text-warning"></i>';
-                statusText = '<span class="text-muted ms-1">Low</span>';
+                    '<i class="bi bi-exclamation-circle-fill text-amber-600"></i>';
+                statusText = '<span class="text-slate-600">Low</span>';
             }
 
             htmlTabel += `
-                <tr data-material-id="${mat.id}">
-                    <td><span class="fw-medium text-dark">${mat.name}</span></td>
+                <tr data-material-id="${mat.id}" class="hover:bg-slate-50">
+                    <td class="font-semibold text-slate-900">${mat.name}</td>
                     <td class="col-price" data-material-id="${mat.id}">${buildPriceCellHtml(mat)}</td>
-                    <td>${mat.current_stock}</td>
-                    <td>${mat.unit}</td>
-                    <td class="d-flex align-items-center">${statusIcon} ${statusText}</td>
+                    <td class="text-slate-700">${mat.current_stock}</td>
+                    <td class="uppercase text-slate-500">${mat.unit}</td>
+                    <td class="flex items-center gap-2 text-sm">${statusIcon} ${statusText}</td>
                 </tr>
             `;
 
@@ -208,13 +211,14 @@ async function loadHistory() {
 
         if (logs.length === 0) {
             list.innerHTML =
-                '<li class="list-group-item text-center text-muted">No transaction history.</li>';
+                '<li class="px-5 py-4 text-center text-slate-500">Tidak ada riwayat transaksi.</li>';
             return;
         }
 
         let html = "";
         logs.forEach((log) => {
-            let textClass = log.type === "in" ? "text-success" : "text-danger";
+            let textClass =
+                log.type === "in" ? "text-emerald-600" : "text-rose-600";
             let sign = log.type === "in" ? "+" : "-";
 
             let date = new Date(log.created_at).toLocaleString("id-ID", {
@@ -225,14 +229,18 @@ async function loadHistory() {
             });
 
             html += `
-                <li class="list-group-item d-flex justify-content-between align-items-start">
-                    <div class="ms-2 me-auto">
-                        <div class="fw-bold">${log.material.name || log.material}</div>
-                        <small class="text-muted">${log.description || "-"}</small>
+                <li class="px-5 py-3 flex items-start justify-between gap-3">
+                    <div>
+                        <div class="font-semibold text-slate-900">${
+                            log.material.name || log.material
+                        }</div>
+                        <p class="text-xs text-slate-500">${
+                            log.description || "-"
+                        }</p>
                     </div>
-                    <div class="text-end">
-                        <span class="fw-bold ${textClass}">${sign}${log.amount}</span> <br>
-                        <span style="font-size: 0.75rem" class="text-muted">${date}</span>
+                    <div class="text-right text-sm">
+                        <span class="font-bold ${textClass}">${sign}${log.amount}</span><br>
+                        <span class="text-slate-500 text-xs">${date}</span>
                     </div>
                 </li>
             `;
@@ -278,10 +286,7 @@ if (formRestock) {
             if (response.ok) {
                 alert("Stock added successfully!");
                 formRestock.reset();
-                const modalEl = document.getElementById("modalRestock");
-                const modalInstance = bootstrap.Modal.getInstance(modalEl);
-                if (modalInstance) modalInstance.hide();
-
+                closeModal("modalRestock");
                 loadMaterials();
                 loadHistory();
             } else {
@@ -323,17 +328,17 @@ function attachPriceEditHandler() {
             }
 
             cell.innerHTML = `
-                <div class="d-flex align-items-center gap-2 price-edit-row">
-                    <div class="input-group input-group-sm">
-                        <span class="input-group-text">Rp</span>
-                        <input type="number" class="form-control price-input" min="0" step="0.01" value="${editConfig.basePrice}">
-                        <span class="input-group-text">/${editConfig.editUnit}</span>
+                <div class="flex items-center gap-2 flex-wrap">
+                    <div class="flex items-center rounded-lg border border-slate-200 overflow-hidden">
+                        <span class="px-3 py-2 text-xs font-semibold text-slate-600 bg-slate-100">Rp</span>
+                        <input type="number" class="price-input w-24 px-3 py-2 text-sm focus:outline-none" min="0" step="0.01" value="${editConfig.basePrice}">
+                        <span class="px-3 py-2 text-xs font-semibold text-slate-600 bg-slate-100">/${editConfig.editUnit}</span>
                     </div>
-                    <button type="button" class="btn btn-sm btn-success btn-save-price" data-material-id="${materialId}" title="Simpan">
-                        <i class="bi bi-check-lg"></i>
+                    <button type="button" class="btn-save-price px-3 py-2 rounded-lg bg-emerald-600 text-white text-xs font-semibold" data-material-id="${materialId}" title="Simpan">
+                        Simpan
                     </button>
-                    <button type="button" class="btn btn-sm btn-outline-secondary btn-cancel-price" data-material-id="${materialId}" title="Batal">
-                        <i class="bi bi-x-lg"></i>
+                    <button type="button" class="btn-cancel-price px-3 py-2 rounded-lg border border-slate-200 text-xs font-semibold text-slate-700" data-material-id="${materialId}" title="Batal">
+                        Batal
                     </button>
                 </div>
             `;
@@ -441,7 +446,7 @@ async function loadPriceHistory() {
         }
         if (!response.ok) {
             list.innerHTML =
-                '<li class="list-group-item text-center text-muted">Riwayat harga belum tersedia.</li>';
+                '<li class="px-5 py-4 text-center text-slate-500">Riwayat harga belum tersedia.</li>';
             return;
         }
 
@@ -457,7 +462,7 @@ async function loadPriceHistory() {
 
         if (logs.length === 0) {
             list.innerHTML =
-                '<li class="list-group-item text-center text-muted">Belum ada perubahan harga.</li>';
+                '<li class="px-5 py-4 text-center text-slate-500">Belum ada perubahan harga.</li>';
             return;
         }
 
@@ -474,14 +479,18 @@ async function loadPriceHistory() {
             });
 
             html += `
-                <li class="list-group-item d-flex justify-content-between align-items-start">
-                    <div class="ms-2 me-auto">
-                        <div class="fw-bold">${log.material?.name || "-"}</div>
-                        <small class="text-muted">Rp ${formatNumber(oldPrice)}/${unitBaku} -> Rp ${formatNumber(newPrice)}/${unitBaku}</small>
+                <li class="px-5 py-3 flex items-start justify-between gap-3">
+                    <div>
+                        <div class="font-semibold text-slate-900">${
+                            log.material?.name || "-"
+                        }</div>
+                        <p class="text-xs text-slate-500">Rp ${formatNumber(
+                            oldPrice,
+                        )}/${unitBaku} -> Rp ${formatNumber(
+                            newPrice,
+                        )}/${unitBaku}</p>
                     </div>
-                    <div class="text-end">
-                        <span style="font-size: 0.75rem" class="text-muted">${date}</span>
-                    </div>
+                    <div class="text-right text-xs text-slate-500">${date}</div>
                 </li>
             `;
         });

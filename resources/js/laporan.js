@@ -21,6 +21,8 @@ let myChart = null;
 
 // Load and initialize report data on page load
 document.addEventListener("DOMContentLoaded", async () => {
+    if (!document.getElementById("myChart")) return;
+    bindExportDropdown();
     try {
         const response = await fetch(apiUrl, {
             headers: getAuthHeaders(),
@@ -132,7 +134,7 @@ function renderTable(data) {
 
     if (!data || data.length === 0) {
         tbody.innerHTML =
-            '<tr><td colspan="7" class="text-center py-4 text-muted">Tidak ada data transaksi pada periode ini.</td></tr>';
+            '<tr><td colspan="7" class="text-center py-4 text-slate-500">Tidak ada data transaksi pada periode ini.</td></tr>';
         document.getElementById("tableTotalOmzet").innerText = "Rp 0";
         document.getElementById("tableTotalHPP").innerText = "Rp 0";
         document.getElementById("tableTotalProfit").innerText = "Rp 0";
@@ -149,14 +151,14 @@ function renderTable(data) {
         tProfit += profitVal;
 
         html += `
-            <tr>
-                <td>#${order.id}</td>
+            <tr class="hover:bg-slate-50">
+                <td class="font-semibold text-slate-900">#${order.id}</td>
                 <td>${order.date}</td>
-                <td>${order.customer}</td>
-                <td><small class="text-muted">${order.products}</small></td>
-                <td class="text-end">${formatRupiah(omzetVal)}</td>
-                <td class="text-end">${formatRupiah(hppVal)}</td>
-                <td class="fw-bold text-success text-end">${formatRupiah(profitVal)}</td>
+                <td class="text-slate-800">${order.customer}</td>
+                <td><span class="text-xs text-slate-500">${order.products}</span></td>
+                <td class="text-right">${formatRupiah(omzetVal)}</td>
+                <td class="text-right">${formatRupiah(hppVal)}</td>
+                <td class="font-bold text-right text-emerald-700">${formatRupiah(profitVal)}</td>
             </tr>
         `;
     });
@@ -166,6 +168,23 @@ function renderTable(data) {
     document.getElementById("tableTotalHPP").innerText = formatRupiah(tHPP);
     document.getElementById("tableTotalProfit").innerText =
         formatRupiah(tProfit);
+}
+
+function bindExportDropdown() {
+    const trigger = document.querySelector("[data-dropdown-trigger]");
+    const menu = document.querySelector("[data-dropdown-menu]");
+    if (!trigger || !menu) return;
+
+    const hide = () => menu.classList.add("hidden");
+
+    trigger.addEventListener("click", (e) => {
+        e.stopPropagation();
+        menu.classList.toggle("hidden");
+    });
+
+    document.addEventListener("click", (e) => {
+        if (!menu.contains(e.target) && !trigger.contains(e.target)) hide();
+    });
 }
 
 function renderChart(data) {

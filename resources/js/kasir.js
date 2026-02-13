@@ -16,6 +16,7 @@ let productsDB = [];
 let lastOrderId = null;
 
 document.addEventListener("DOMContentLoaded", async () => {
+    if (!document.getElementById("product_list")) return;
     try {
         const response = await fetch(apiProducts, {
             headers: {
@@ -121,9 +122,9 @@ function renderCart() {
 
     if (cart.length === 0) {
         tbody.innerHTML = `<tr>
-                <td colspan="5" class="text-center py-5 text-muted">
-                    <span class="d-block mb-1 fw-medium">Cart is empty</span>
-                    <small style="font-size: 0.75rem; opacity: 0.7;">Select products to begin.</small>
+                <td colspan="5" class="text-center py-6 text-slate-500">
+                    <span class="block mb-1 font-semibold">Cart is empty</span>
+                    <small class="text-xs text-slate-400">Select products to begin.</small>
                 </td>
             </tr>`;
         totalDisplay.innerText = "Rp 0";
@@ -140,13 +141,13 @@ function renderCart() {
         grandTotal += subtotal;
 
         html += `
-            <tr>
-                <td><span class="fw-medium text-dark">${item.name}</span></td>
-                <td class="text-end text-muted">${formatRupiah(priceNum)}</td>
-                <td class="text-center">${item.quantity}</td>
-                <td class="text-end fw-bold text-dark">${formatRupiah(subtotal)}</td>
-                <td class="text-center"><button class="btn btn-sm btn-link text-danger p-0 text-decoration-none" onclick="hapusItem(${index})"><i class="bi bi-trash"></i></button></td>
-            </tr>
+                <tr class="hover:bg-slate-50">
+                    <td class="font-semibold text-slate-900">${item.name}</td>
+                    <td class="text-right text-slate-500">${formatRupiah(priceNum)}</td>
+                    <td class="text-center">${item.quantity}</td>
+                    <td class="text-right font-semibold text-slate-900">${formatRupiah(subtotal)}</td>
+                    <td class="text-center"><button class="text-rose-600 hover:text-rose-700" onclick="hapusItem(${index})"><i class="bi bi-trash"></i></button></td>
+                </tr>
         `;
     });
 
@@ -230,7 +231,7 @@ function showCompleteBox(orderId) {
     const box = document.getElementById("orderCompleteBox");
     const label = document.getElementById("lastOrderId");
     if (label) label.innerText = `#${orderId}`;
-    if (box) box.classList.remove("d-none");
+    if (box) box.classList.remove("hidden");
 }
 
 async function completeLastOrder() {
@@ -255,7 +256,7 @@ async function completeLastOrder() {
             alert(`Pesanan #${lastOrderId} berhasil ditandai selesai.`);
             lastOrderId = null;
             const box = document.getElementById("orderCompleteBox");
-            if (box) box.classList.add("d-none");
+            if (box) box.classList.add("hidden");
         } else {
             const result = await response.json().catch(() => ({}));
             alert(result.message || "Gagal menandai pesanan selesai.");

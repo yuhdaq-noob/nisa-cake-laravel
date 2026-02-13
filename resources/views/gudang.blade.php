@@ -2,128 +2,120 @@
 @php($title = 'Gudang & Inventaris')
 @php($active = 'gudang')
 
-@section('styles')
-    @vite(['resources/css/gudang.css'])
-@endsection
-
 @section('content')
-    <!-- Header & Action Buttons -->
-    <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
-        <h3 class="mb-0 fw-bold">Manajemen Stok</h3>
-
-        <div class="d-flex gap-2">
-            <!-- Tombol Belanja (Restock) -->
-            <button class="btn btn-primary shadow-sm" data-bs-toggle="modal" data-bs-target="#modalRestock">
+    <div class="flex flex-wrap items-center justify-between gap-3 mb-6">
+        <div>
+            <p class="text-xs uppercase tracking-[0.2em] text-slate-500">Inventaris</p>
+            <h2 class="text-2xl font-bold text-slate-900">Manajemen Stok</h2>
+        </div>
+        <div class="flex flex-wrap gap-2">
+            <button class="btn-prim inline-flex items-center gap-2" data-modal-open="modalRestock">
                 <i class="bi bi-cart-plus-fill"></i>
-                <span class="d-none d-md-inline ms-1">Belanja Bahan</span>
+                <span>Belanja Bahan</span>
             </button>
-
-            <!-- Tombol Catat Kerusakan -->
-            <button type="button" class="btn btn-outline-secondary shadow-sm" data-bs-toggle="modal" data-bs-target="#modalKurangStok">
-                <i class="bi bi-exclamation-triangle-fill"></i>
-                <span class="d-none d-md-inline ms-1">Catat Kerusakan</span>
+            <button type="button" class="inline-flex items-center gap-2 rounded-lg border border-slate-200 px-4 py-2.5 font-semibold text-slate-700 bg-white shadow-sm hover:border-slate-300" data-modal-open="modalKurangStok">
+                <i class="bi bi-exclamation-triangle-fill text-amber-600"></i>
+                <span>Catat Kerusakan</span>
             </button>
         </div>
     </div>
 
-    <!-- Alerts Area -->
     @if(session('success'))
-        <div class="alert alert-success alert-dismissible fade show mb-4" role="alert">
+        <div class="mb-4 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-emerald-800">
             {{ session('success') }}
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
         </div>
     @endif
 
     @if(session('error'))
-        <div class="alert alert-danger alert-dismissible fade show mb-4" role="alert">
+        <div class="mb-4 rounded-xl border border-rose-200 bg-rose-50 px-4 py-3 text-rose-800">
             {{ session('error') }}
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
         </div>
     @endif
 
-    <div class="row g-4">
-        <div class="col-md-8">
-            <div class="card shadow-sm">
-                <div class="card-header bg-white fw-bold">Stok Fisik Saat Ini</div>
-                <div class="card-body p-0">
-                    <div class="table-responsive">
-                        <table class="table table-hover mb-0 align-middle table-gudang">
-                            <thead class="table-light">
-                                <tr>
-                                    <th>Nama Bahan</th>
-                                    <th>Harga/Satuan Baku</th>
-                                    <th>Stok</th>
-                                    <th>Satuan</th>
-                                    <th>Status</th>
-                                </tr>
-                            </thead>
-                            <tbody id="tabelStok">
-                                <tr><td colspan="5" class="text-center py-3">Memuat data...</td></tr>
-                            </tbody>
-                        </table>
-                    </div>
+    <div class="grid gap-4 lg:grid-cols-3">
+        <div class="lg:col-span-2 space-y-4">
+            <div class="bg-white rounded-2xl shadow-card border border-slate-100">
+                <div class="px-5 py-4 border-b border-slate-100 flex items-center justify-between">
+                    <p class="text-sm font-semibold text-slate-900">Stok Fisik Saat Ini</p>
+                    <span class="text-xs text-slate-500">Live update</span>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="min-w-full table-basic text-sm">
+                        <thead>
+                            <tr>
+                                <th class="text-left">Nama Bahan</th>
+                                <th class="text-left">Harga/Satuan Baku</th>
+                                <th class="text-left">Stok</th>
+                                <th class="text-left">Satuan</th>
+                                <th class="text-left">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tabelStok">
+                            <tr><td colspan="5" class="text-center py-4 text-slate-500">Memuat data...</td></tr>
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
 
-        <div class="col-md-4">
-            <div class="row g-3 log-grid">
-                <div class="col-12 col-lg-6">
-                    <div class="card shadow-sm log-card h-100">
-                        <div class="card-header bg-white fw-bold">Riwayat Keluar/Masuk</div>
-                        <div class="card-body p-0 log-scroll">
-                            <ul class="list-group list-group-flush" id="listLog">
-                                <li class="list-group-item text-center text-muted py-3">Memuat riwayat...</li>
-                            </ul>
-                        </div>
-                    </div>
+        <div class="space-y-4">
+            <div class="bg-white rounded-2xl shadow-card border border-slate-100 h-full">
+                <div class="px-5 py-4 border-b border-slate-100">
+                    <p class="text-sm font-semibold text-slate-900">Riwayat Keluar/Masuk</p>
                 </div>
+                <div class="max-h-[320px] overflow-y-auto">
+                    <ul class="divide-y divide-slate-100" id="listLog">
+                        <li class="px-5 py-4 text-center text-slate-500">Memuat riwayat...</li>
+                    </ul>
+                </div>
+            </div>
 
-                <div class="col-12 col-lg-6">
-                    <div class="card shadow-sm log-card h-100">
-                        <div class="card-header bg-white fw-bold">Riwayat Perubahan Harga</div>
-                        <div class="card-body p-0 log-scroll">
-                            <ul class="list-group list-group-flush" id="listPriceLog">
-                                <li class="list-group-item text-center text-muted py-3">Memuat riwayat harga...</li>
-                            </ul>
-                        </div>
-                    </div>
+            <div class="bg-white rounded-2xl shadow-card border border-slate-100 h-full">
+                <div class="px-5 py-4 border-b border-slate-100">
+                    <p class="text-sm font-semibold text-slate-900">Riwayat Perubahan Harga</p>
+                </div>
+                <div class="max-h-[320px] overflow-y-auto">
+                    <ul class="divide-y divide-slate-100" id="listPriceLog">
+                        <li class="px-5 py-4 text-center text-slate-500">Memuat riwayat harga...</li>
+                    </ul>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- MODALS (Diletakkan di luar container utama agar tidak tertutup elemen lain) -->
-
     <!-- Modal Restock -->
-    <div class="modal fade" id="modalRestock" tabindex="-1">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header bg-primary text-white">
-                    <h5 class="modal-title">Input Belanja Bahan</h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-                </div>
-                <form id="formRestock">
-                    <div class="modal-body">
-                        <div class="mb-3">
-                            <label class="form-label">Pilih Bahan Baku</label>
-                            <select id="selectBahan" class="form-select" required>
-                                <option value="" disabled selected>-- Pilih Bahan --</option>
-                            </select>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">Jumlah Masuk (Restock)</label>
-                            <input type="number" id="inputJumlah" class="form-control" min="1" placeholder="Contoh: 5000" required>
-                            <small class="text-muted">Masukkan angka saja (sesuai satuan bahan).</small>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">Keterangan (Opsional)</label>
-                            <input type="text" id="inputKet" class="form-control" placeholder="Contoh: Belanja di Pasar Besar">
-                        </div>
+    <div id="modalRestock" class="fixed inset-0 z-50 hidden">
+        <div class="absolute inset-0 bg-slate-900/50" data-modal-close="modalRestock"></div>
+        <div class="relative z-10 flex items-center justify-center min-h-screen px-4">
+            <div class="w-full max-w-lg bg-white rounded-2xl shadow-card border border-slate-100">
+                <div class="flex items-center justify-between px-5 py-4 border-b border-slate-100">
+                    <div>
+                        <p class="text-sm font-semibold text-slate-900">Input Belanja Bahan</p>
+                        <p class="text-xs text-slate-500">Catat restock bahan baku</p>
                     </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                        <button type="submit" class="btn btn-primary">Simpan Stok</button>
+                    <button class="p-2 text-slate-500 hover:bg-slate-100 rounded-lg" data-modal-close="modalRestock" aria-label="Tutup">
+                        <i class="bi bi-x-lg"></i>
+                    </button>
+                </div>
+                <form id="formRestock" class="px-5 py-4 space-y-4">
+                    <div class="space-y-2">
+                        <label class="text-sm font-semibold text-slate-800">Pilih Bahan Baku</label>
+                        <select id="selectBahan" class="w-full rounded-lg border border-slate-200 px-3 py-2 focus:border-amber-500 focus:ring-2 focus:ring-amber-200" required>
+                            <option value="" disabled selected>-- Pilih Bahan --</option>
+                        </select>
+                    </div>
+                    <div class="space-y-2">
+                        <label class="text-sm font-semibold text-slate-800">Jumlah Masuk (Restock)</label>
+                        <input type="number" id="inputJumlah" class="w-full rounded-lg border border-slate-200 px-3 py-2 focus:border-amber-500 focus:ring-2 focus:ring-amber-200" min="1" placeholder="Contoh: 5000" required>
+                        <p class="text-xs text-slate-500">Masukkan angka sesuai satuan bahan.</p>
+                    </div>
+                    <div class="space-y-2">
+                        <label class="text-sm font-semibold text-slate-800">Keterangan (Opsional)</label>
+                        <input type="text" id="inputKet" class="w-full rounded-lg border border-slate-200 px-3 py-2 focus:border-amber-500 focus:ring-2 focus:ring-amber-200" placeholder="Contoh: Belanja di Pasar Besar">
+                    </div>
+                    <div class="flex justify-end gap-2 pt-2">
+                        <button type="button" class="px-4 py-2 rounded-lg border border-slate-200 text-slate-700" data-modal-close="modalRestock">Batal</button>
+                        <button type="submit" class="btn-prim">Simpan Stok</button>
                     </div>
                 </form>
             </div>
@@ -131,41 +123,45 @@
     </div>
 
     <!-- Modal Catat Kerusakan -->
-    <div class="modal fade" id="modalKurangStok" tabindex="-1">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header bg-danger text-white">
-                    <h5 class="modal-title">📉 Catat Pengurangan Stok</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <form action="{{ route('materials.reduce') }}" method="POST">
-                    @csrf
-                    <div class="modal-body">
-                        <div class="mb-3">
-                            <label class="form-label">Pilih Bahan Baku</label>
-                            <select name="material_id" class="form-select" required>
-                                <option value="">-- Pilih Bahan --</option>
-                                @foreach($materials as $m)
-                                    <option value="{{ $m->id }}">
-                                        {{ $m->name }} (Sisa: {{ $m->current_stock }} {{ $m->unit }})
-                                    </option>
-                                @endforeach
-                            </select>
-                        </div>
-
-                        <div class="mb-3">
-                            <label class="form-label">Jumlah Berkurang</label>
-                            <input type="number" name="amount" class="form-control" min="1" placeholder="Contoh: 5" required>
-                        </div>
-
-                        <div class="mb-3">
-                            <label class="form-label">Keterangan / Alasan</label>
-                            <textarea name="description" class="form-control" rows="3" placeholder="Wajib diisi! Contoh: Telur pecah saat pengiriman, atau Tepung basah kena hujan." required></textarea>
-                        </div>
+    <div id="modalKurangStok" class="fixed inset-0 z-50 hidden">
+        <div class="absolute inset-0 bg-slate-900/50" data-modal-close="modalKurangStok"></div>
+        <div class="relative z-10 flex items-center justify-center min-h-screen px-4">
+            <div class="w-full max-w-lg bg-white rounded-2xl shadow-card border border-slate-100">
+                <div class="flex items-center justify-between px-5 py-4 border-b border-slate-100">
+                    <div>
+                        <p class="text-sm font-semibold text-rose-700">Catat Pengurangan Stok</p>
+                        <p class="text-xs text-slate-500">Kerusakan atau susut stok</p>
                     </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                        <button type="submit" class="btn btn-danger">Simpan Catatan</button>
+                    <button class="p-2 text-slate-500 hover:bg-slate-100 rounded-lg" data-modal-close="modalKurangStok" aria-label="Tutup">
+                        <i class="bi bi-x-lg"></i>
+                    </button>
+                </div>
+                <form action="{{ route('materials.reduce') }}" method="POST" class="px-5 py-4 space-y-4">
+                    @csrf
+                    <div class="space-y-2">
+                        <label class="text-sm font-semibold text-slate-800">Pilih Bahan Baku</label>
+                        <select name="material_id" class="w-full rounded-lg border border-slate-200 px-3 py-2 focus:border-amber-500 focus:ring-2 focus:ring-amber-200" required>
+                            <option value="">-- Pilih Bahan --</option>
+                            @foreach($materials as $m)
+                                <option value="{{ $m->id }}">
+                                    {{ $m->name }} (Sisa: {{ $m->current_stock }} {{ $m->unit }})
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
+
+                    <div class="space-y-2">
+                        <label class="text-sm font-semibold text-slate-800">Jumlah Berkurang</label>
+                        <input type="number" name="amount" class="w-full rounded-lg border border-slate-200 px-3 py-2 focus:border-amber-500 focus:ring-2 focus:ring-amber-200" min="1" placeholder="Contoh: 5" required>
+                    </div>
+
+                    <div class="space-y-2">
+                        <label class="text-sm font-semibold text-slate-800">Keterangan / Alasan</label>
+                        <textarea name="description" class="w-full rounded-lg border border-slate-200 px-3 py-2 focus:border-amber-500 focus:ring-2 focus:ring-amber-200" rows="3" placeholder="Wajib diisi! Contoh: Telur pecah atau tepung basah." required></textarea>
+                    </div>
+                    <div class="flex justify-end gap-2 pt-2">
+                        <button type="button" class="px-4 py-2 rounded-lg border border-slate-200 text-slate-700" data-modal-close="modalKurangStok">Batal</button>
+                        <button type="submit" class="px-4 py-2 rounded-lg bg-rose-600 text-white font-semibold shadow-card">Simpan Catatan</button>
                     </div>
                 </form>
             </div>

@@ -99,11 +99,11 @@ export const showError = (elementId, message) => {
     const el = document.getElementById(elementId);
     if (el) {
         el.innerText = message;
-        el.classList.remove("d-none");
+        el.classList.remove("hidden");
     }
 };
 
 export const hideError = (elementId) => {
     const el = document.getElementById(elementId);
-    if (el) el.classList.add("d-none");
+    if (el) el.classList.add("hidden");
 };

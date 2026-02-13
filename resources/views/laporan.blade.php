@@ -2,68 +2,64 @@
 @php($title = 'Laporan Keuangan')
 @php($active = 'laporan')
 
-@section('styles')
-    @vite(['resources/css/laporan.css'])
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-@endsection
-
 @section('content')
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h3 class="mb-0"> Dashboard Keuangan</h3>
+    <div class="flex flex-wrap items-center justify-between gap-3 mb-6">
+        <div>
+            <p class="text-xs uppercase tracking-[0.2em] text-slate-500">Laporan</p>
+            <h2 class="text-2xl font-bold text-slate-900">Dashboard Keuangan</h2>
+        </div>
     </div>
 
-    <div class="row g-3 mb-4">
-        <div class="col-12 col-md-4">
-            <div class="card border-0 shadow-sm h-100">
-                <div class="card-body p-3">
-                    <h6 class="text-muted small text-uppercase mb-1">Omzet Hari Ini</h6>
-                    <h3 class="fw-bold text-dark mb-0" id="cardOmzetToday">Rp 0</h3>
-                </div>
+    <div class="grid gap-4 md:grid-cols-3 mb-4">
+        <div class="bg-white rounded-2xl shadow-card border border-slate-100">
+            <div class="p-4">
+                <p class="text-xs text-slate-500 uppercase">Omzet Hari Ini</p>
+                <h3 class="text-2xl font-bold text-slate-900" id="cardOmzetToday">Rp 0</h3>
             </div>
         </div>
-        <div class="col-12 col-md-4">
-            <div class="card border-0 shadow-sm h-100 bg-primary text-white">
-                <div class="card-body p-3">
-                    <h6 class="text-white-50 small text-uppercase mb-1">Profit Hari Ini</h6>
-                    <h3 class="fw-bold mb-0" id="cardProfitToday">Rp 0</h3>
-                </div>
+        <div class="bg-amber-900 rounded-2xl shadow-card text-white">
+            <div class="p-4">
+                <p class="text-xs text-amber-100 uppercase">Profit Hari Ini</p>
+                <h3 class="text-2xl font-bold" id="cardProfitToday">Rp 0</h3>
             </div>
         </div>
-        <div class="col-12 col-md-4">
-            <div class="card border-0 shadow-sm h-100">
-                <div class="card-body p-3">
-                    <h6 class="text-muted small text-uppercase mb-1">Profit Bulan Ini</h6>
-                    <h3 class="fw-bold text-dark mb-0" id="cardProfitMonth">Rp 0</h3>
-                </div>
+        <div class="bg-white rounded-2xl shadow-card border border-slate-100">
+            <div class="p-4">
+                <p class="text-xs text-slate-500 uppercase">Profit Bulan Ini</p>
+                <h3 class="text-2xl font-bold text-slate-900" id="cardProfitMonth">Rp 0</h3>
             </div>
         </div>
     </div>
 
-    <div class="card shadow-sm mb-4">
-        <div class="card-header bg-white fw-bold"> Grafik 10 Transaksi Terakhir</div>
-        <div class="card-body">
-            <div style="position: relative; height:300px; width:100%">
+    <div class="bg-white rounded-2xl shadow-card border border-slate-100 mb-4">
+        <div class="px-5 py-4 border-b border-slate-100 flex items-center justify-between">
+            <p class="text-sm font-semibold text-slate-900">Grafik 10 Transaksi Terakhir</p>
+        </div>
+        <div class="p-5">
+            <div class="relative h-[300px] w-full">
                 <canvas id="myChart"></canvas>
             </div>
         </div>
     </div>
 
-    <div class="card shadow-sm">
-        <div class="card-header bg-white d-flex flex-column flex-md-row justify-content-between align-items-center gap-2">
-            <h5 class="mb-0">Rincian Transaksi</h5>
-            <div class="d-flex gap-2 w-100 w-md-auto justify-content-end">
-                <div class="btn-group">
-                    <button type="button" class="btn btn-outline-dark dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+    <div class="bg-white rounded-2xl shadow-card border border-slate-100">
+        <div class="px-5 py-4 border-b border-slate-100 flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+            <h5 class="text-lg font-semibold text-slate-900">Rincian Transaksi</h5>
+            <div class="flex flex-wrap gap-2 items-center">
+                <div class="relative">
+                    <button type="button" class="inline-flex items-center gap-2 rounded-lg border border-slate-200 px-3 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-50" data-dropdown-trigger>
                         Export
+                        <i class="bi bi-chevron-down text-xs"></i>
                     </button>
-                    <ul class="dropdown-menu">
-                        <li><a class="dropdown-item" href="#" id="btnExportExcel">Excel (.xlsx)</a></li>
-                        <li><a class="dropdown-item" href="#" id="btnExportPdf">PDF (.pdf)</a></li>
-                    </ul>
+                    <div class="hidden absolute right-0 mt-2 w-40 rounded-xl border border-slate-200 bg-white shadow-card overflow-hidden" data-dropdown-menu>
+                        <a class="block px-4 py-2 text-sm text-slate-700 hover:bg-slate-50" href="#" id="btnExportExcel">Excel (.xlsx)</a>
+                        <a class="block px-4 py-2 text-sm text-slate-700 hover:bg-slate-50" href="#" id="btnExportPdf">PDF (.pdf)</a>
+                    </div>
                 </div>
-                <input type="text" id="searchInput" class="form-control w-auto" placeholder="Cari pelanggan / produk..." style="min-width: 200px;">
-                <select id="filterWaktu" class="form-select w-auto">
-                    <option value="all">Semua Waktu</option> <option value="today">Hari Ini</option>
+                <input type="text" id="searchInput" class="rounded-lg border border-slate-200 px-3 py-2 text-sm focus:border-amber-500 focus:ring-2 focus:ring-amber-200" placeholder="Cari pelanggan / produk..." style="min-width: 200px;">
+                <select id="filterWaktu" class="rounded-lg border border-slate-200 px-3 py-2 text-sm focus:border-amber-500 focus:ring-2 focus:ring-amber-200">
+                    <option value="all">Semua Waktu</option>
+                    <option value="today">Hari Ini</option>
                     <option value="last7">7 Hari Terakhir</option>
                     <option value="month">Bulan Ini</option>
                     <option value="last_month">Bulan Lalu</option>
@@ -72,36 +68,41 @@
             </div>
         </div>
 
-        <div class="card-body p-0">
-            <div class="table-responsive">
-              <table class="table table-striped table-hover mb-0 align-middle">
-                  <thead class="table-dark">
+        <div class="p-2">
+            <div class="overflow-x-auto">
+              <table class="min-w-full table-basic table-dark-header text-sm">
+                  <thead>
                       <tr>
-                          <th>ID</th>
-                          <th style="min-width: 120px;">Tanggal</th>
-                          <th style="min-width: 150px;">Pelanggan</th>
-                          <th>Produk</th>
-                          <th class="text-end">Omzet</th>
-                          <th class="text-end">HPP</th>
-                          <th class="text-end">PROFIT</th>
+                          <th class="text-left">ID</th>
+                          <th class="text-left" style="min-width: 120px;">Tanggal</th>
+                          <th class="text-left" style="min-width: 150px;">Pelanggan</th>
+                          <th class="text-left">Produk</th>
+                          <th class="text-right">Omzet</th>
+                          <th class="text-right">HPP</th>
+                          <th class="text-right">PROFIT</th>
                       </tr>
                   </thead>
                   <tbody id="tabelLaporan">
                       <tr><td colspan="7" class="text-center py-4">Memuat data...</td></tr>
                   </tbody>
                   <tfoot>
-                      <tr class="fw-bold table-secondary">
-                          <td colspan="4" class="text-end">TOTAL:</td>
+                      <tr class="font-bold bg-slate-50">
+                          <td colspan="4" class="text-right">TOTAL:</td>
 
-                          <td id="tableTotalOmzet" class="text-end">Rp 0</td>
-                          <td id="tableTotalHPP" class="text-end">Rp 0</td>
-                          <td id="tableTotalProfit" class="text-success text-end">Rp 0</td>
+                          <td id="tableTotalOmzet" class="text-right">Rp 0</td>
+                          <td id="tableTotalHPP" class="text-right">Rp 0</td>
+                          <td id="tableTotalProfit" class="text-right text-emerald-700">Rp 0</td>
                       </tr>
                   </tfoot>
               </table>
             </div>
         </div>
     </div>
+@endsection
+
+@section('scripts')
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    @vite(['resources/js/laporan.js'])
 @endsection
 
 @section('scripts')

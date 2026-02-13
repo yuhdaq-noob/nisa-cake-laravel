@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Migrated UI dari kombinasi Bootstrap/Tailwind menjadi layout full Tailwind CSS dengan komponen custom.
+- Menyatukan styling halaman gudang, kasir, dan laporan ke dalam `resources/css/app.css` + utility Tailwind di Blade.
+- Mengganti login lama (`login.css`) dengan implementasi baru berbasis `login-tailwind.css`.
+- Menambah lapisan `resources/js/ui.js` untuk mengelola drawer, modal, dan dropdown tanpa dependency JS eksternal.
+
 ## [1.0.0] - 2026-02-11
 
 ### Added
@@ -106,4 +113,3 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 [Unreleased]: https://github.com/yuhdaq-noob/nisa-cake-laravel/compare/v1.0.0...HEAD
 [1.0.0]: https://github.com/yuhdaq-noob/nisa-cake-laravel/releases/tag/v1.0.0
-

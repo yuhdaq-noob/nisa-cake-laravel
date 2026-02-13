@@ -6,7 +6,7 @@
     <title>Login Owner - Nisa Cake</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
 
-    @vite(['resources/css/login.css', 'resources/js/login.js'])
+    @vite(['resources/css/login-tailwind.css', 'resources/js/login.js'])
 </head>
 <body data-login-post="{{ route('login.post') }}" class="body-bg">
     <div class="login-card">
