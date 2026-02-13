@@ -10,7 +10,7 @@ class MasterDataSeeder extends Seeder
     public function run(): void
     {
         // Isi data master: materials, products, product_materials
-        DB::table('materials')->insert([
+        DB::table('materials')->insert([    // TODO: ADA BAHAN YANG BELUM DI PERBAIKI HARGA / STOK MINIMUM NYA
             // Format: ['id', 'name', 'unit', 'unit_baku', 'price_per_unit', 'price_per_unit_baku', 'current_stock', 'min_stock_level']
             ['id' => 1, 'name' => 'Tepung Terigu', 'unit' => 'gram', 'unit_baku' => 'gram', 'price_per_unit' => 12.0, 'price_per_unit_baku' => 12.0, 'current_stock' => 0, 'min_stock_level' => 5000, 'created_at' => now(), 'updated_at' => now()], // min 5 kg
             ['id' => 2, 'name' => 'Telur Ayam', 'unit' => 'butir', 'unit_baku' => 'butir', 'price_per_unit' => 1750.0, 'price_per_unit_baku' => 1750.0, 'current_stock' => 0, 'min_stock_level' => 60, 'created_at' => now(), 'updated_at' => now()], // min 2 tray
@@ -31,6 +31,24 @@ class MasterDataSeeder extends Seeder
             ['id' => 17, 'name' => 'Air Lemon', 'unit' => 'gram', 'unit_baku' => 'gram', 'price_per_unit' => 75.0, 'price_per_unit_baku' => 75.0, 'current_stock' => 0, 'min_stock_level' => 100, 'created_at' => now(), 'updated_at' => now()], // min 100 ml
             ['id' => 18, 'name' => 'Parutan Kelapa', 'unit' => 'gram', 'unit_baku' => 'gram', 'price_per_unit' => 38.0, 'price_per_unit_baku' => 38.0, 'current_stock' => 0, 'min_stock_level' => 1000, 'created_at' => now(), 'updated_at' => now()], // min 1 kg
         ]);
+
+        // Setelah insert master materials, konversi ke unit baku (kg / liter)
+        // price_per_unit: harga per unit kecil (gram / ml)
+        // price_per_unit_baku: harga per unit baku (kg / liter / dll)
+        DB::statement(
+            "UPDATE materials\n".
+            "SET\n".
+            "  unit_baku = CASE\n".
+            "    WHEN LOWER(unit) = 'gram' THEN 'kg'\n".
+            "    WHEN LOWER(unit) = 'ml' THEN 'liter'\n".
+            "    ELSE unit\n".
+            "  END,\n".
+            "  price_per_unit_baku = CASE\n".
+            "    WHEN LOWER(unit) = 'gram' THEN price_per_unit * 1000\n".
+            "    WHEN LOWER(unit) = 'ml' THEN price_per_unit * 1000\n".
+            "    ELSE price_per_unit\n".
+            "  END"
+        );
 
         DB::table('products')->insert([
             ['id' => 1, 'name' => 'Kue Tart Bolu 14', 'selling_price' => 45000, 'production_cost' => 20721.0, 'description' => 'Kue Kue Tart Bolu 14', 'created_at' => now(), 'updated_at' => now()],
