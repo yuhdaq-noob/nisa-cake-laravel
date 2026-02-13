@@ -5,6 +5,7 @@
 
 import "./bootstrap";
 import "./api.js";
+import { getAuthHeaders, formatNumber } from "./utils.js";
 
 const apiMaterials = "/api/materials";
 const apiHistory = "/api/stocks/history";
@@ -12,12 +13,6 @@ const apiAddStock = "/api/stocks/add";
 const apiMaterialPrice = "/api/materials";
 const apiPriceHistory = "/api/materials/price-history";
 
-const getAuthHeaders = () =>
-    typeof window !== "undefined" && window.getAuthHeaders
-        ? window.getAuthHeaders()
-        : {};
-
-const priceFormatter = new Intl.NumberFormat("id-ID");
 const materialMap = new Map();
 
 const BASE_UNIT_CONFIG = {
@@ -99,7 +94,7 @@ function buildPriceCellHtml(mat) {
 
     return `
         <span class="price-display-group">
-            <span class="price-display">Rp ${priceFormatter.format(displayPrice)}/${displayUnit}</span>
+            <span class="price-display">Rp ${formatNumber(displayPrice)}/${displayUnit}</span>
             ${editButton}
         </span>
     `;
@@ -482,7 +477,7 @@ async function loadPriceHistory() {
                 <li class="list-group-item d-flex justify-content-between align-items-start">
                     <div class="ms-2 me-auto">
                         <div class="fw-bold">${log.material?.name || "-"}</div>
-                        <small class="text-muted">Rp ${priceFormatter.format(oldPrice)}/${unitBaku} → Rp ${priceFormatter.format(newPrice)}/${unitBaku}</small>
+                        <small class="text-muted">Rp ${formatNumber(oldPrice)}/${unitBaku} -> Rp ${formatNumber(newPrice)}/${unitBaku}</small>
                     </div>
                     <div class="text-end">
                         <span style="font-size: 0.75rem" class="text-muted">${date}</span>

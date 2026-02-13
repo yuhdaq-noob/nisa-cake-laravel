@@ -1,103 +1,91 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gudang & Inventaris - Nisa Cake</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Bootstrap Icons -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-    @vite(['resources/css/app.css', 'resources/css/gudang.css', 'resources/js/gudang.js'])
-</head>
-<body class="bg-light">
+@extends('layouts.app')
+@php($title = 'Gudang & Inventaris')
+@php($active = 'gudang')
 
-    <div class="d-flex flex-column flex-lg-row min-vh-100">
-        <x-navbar active="gudang" />
+@section('styles')
+    @vite(['resources/css/gudang.css'])
+@endsection
 
-        <div class="grow">
-            <div class="container py-4 mb-5">
-                <!-- Header & Action Buttons -->
-                <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
-                    <h3 class="mb-0 fw-bold">Manajemen Stok</h3>
+@section('content')
+    <!-- Header & Action Buttons -->
+    <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+        <h3 class="mb-0 fw-bold">Manajemen Stok</h3>
 
-                    <div class="d-flex gap-2">
-                        <!-- Tombol Belanja (Restock) -->
-                        <button class="btn btn-primary shadow-sm" data-bs-toggle="modal" data-bs-target="#modalRestock">
-                            <i class="bi bi-cart-plus-fill"></i>
-                            <span class="d-none d-md-inline ms-1">Belanja Bahan</span>
-                        </button>
+        <div class="d-flex gap-2">
+            <!-- Tombol Belanja (Restock) -->
+            <button class="btn btn-primary shadow-sm" data-bs-toggle="modal" data-bs-target="#modalRestock">
+                <i class="bi bi-cart-plus-fill"></i>
+                <span class="d-none d-md-inline ms-1">Belanja Bahan</span>
+            </button>
 
-                        <!-- Tombol Catat Kerusakan -->
-                        <button type="button" class="btn btn-outline-secondary shadow-sm" data-bs-toggle="modal" data-bs-target="#modalKurangStok">
-                            <i class="bi bi-exclamation-triangle-fill"></i>
-                            <span class="d-none d-md-inline ms-1">Catat Kerusakan</span>
-                        </button>
+            <!-- Tombol Catat Kerusakan -->
+            <button type="button" class="btn btn-outline-secondary shadow-sm" data-bs-toggle="modal" data-bs-target="#modalKurangStok">
+                <i class="bi bi-exclamation-triangle-fill"></i>
+                <span class="d-none d-md-inline ms-1">Catat Kerusakan</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Alerts Area -->
+    @if(session('success'))
+        <div class="alert alert-success alert-dismissible fade show mb-4" role="alert">
+            {{ session('success') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    @endif
+
+    @if(session('error'))
+        <div class="alert alert-danger alert-dismissible fade show mb-4" role="alert">
+            {{ session('error') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    @endif
+
+    <div class="row g-4">
+        <div class="col-md-8">
+            <div class="card shadow-sm">
+                <div class="card-header bg-white fw-bold">Stok Fisik Saat Ini</div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0 align-middle table-gudang">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Nama Bahan</th>
+                                    <th>Harga/Satuan Baku</th>
+                                    <th>Stok</th>
+                                    <th>Satuan</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tabelStok">
+                                <tr><td colspan="5" class="text-center py-3">Memuat data...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="row g-3 log-grid">
+                <div class="col-12 col-lg-6">
+                    <div class="card shadow-sm log-card h-100">
+                        <div class="card-header bg-white fw-bold">Riwayat Keluar/Masuk</div>
+                        <div class="card-body p-0 log-scroll">
+                            <ul class="list-group list-group-flush" id="listLog">
+                                <li class="list-group-item text-center text-muted py-3">Memuat riwayat...</li>
+                            </ul>
+                        </div>
                     </div>
                 </div>
 
-                <!-- Alerts Area -->
-                @if(session('success'))
-                    <div class="alert alert-success alert-dismissible fade show mb-4" role="alert">
-                        {{ session('success') }}
-                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                    </div>
-                @endif
-
-                @if(session('error'))
-                    <div class="alert alert-danger alert-dismissible fade show mb-4" role="alert">
-                        {{ session('error') }}
-                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                    </div>
-                @endif
-
-                <div class="row g-4">
-                    <div class="col-md-8">
-                        <div class="card shadow-sm">
-                            <div class="card-header bg-white fw-bold">Stok Fisik Saat Ini</div>
-                            <div class="card-body p-0">
-                                <div class="table-responsive">
-                                    <table class="table table-hover mb-0 align-middle table-gudang">
-                                        <thead class="table-light">
-                                            <tr>
-                                                <th>Nama Bahan</th>
-                                                <th>Harga/Satuan Baku</th>
-                                                <th>Stok</th>
-                                                <th>Satuan</th>
-                                                <th>Status</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody id="tabelStok">
-                                            <tr><td colspan="5" class="text-center py-3">Memuat data...</td></tr>
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-md-4">
-                        <div class="row g-3 log-grid">
-                            <div class="col-12 col-lg-6">
-                                <div class="card shadow-sm log-card h-100">
-                                    <div class="card-header bg-white fw-bold">Riwayat Keluar/Masuk</div>
-                                    <div class="card-body p-0 log-scroll">
-                                        <ul class="list-group list-group-flush" id="listLog">
-                                            <li class="list-group-item text-center text-muted py-3">Memuat riwayat...</li>
-                                        </ul>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="col-12 col-lg-6">
-                                <div class="card shadow-sm log-card h-100">
-                                    <div class="card-header bg-white fw-bold">Riwayat Perubahan Harga</div>
-                                    <div class="card-body p-0 log-scroll">
-                                        <ul class="list-group list-group-flush" id="listPriceLog">
-                                            <li class="list-group-item text-center text-muted py-3">Memuat riwayat harga...</li>
-                                        </ul>
-                                    </div>
-                                </div>
-                            </div>
+                <div class="col-12 col-lg-6">
+                    <div class="card shadow-sm log-card h-100">
+                        <div class="card-header bg-white fw-bold">Riwayat Perubahan Harga</div>
+                        <div class="card-body p-0 log-scroll">
+                            <ul class="list-group list-group-flush" id="listPriceLog">
+                                <li class="list-group-item text-center text-muted py-3">Memuat riwayat harga...</li>
+                            </ul>
                         </div>
                     </div>
                 </div>
@@ -183,7 +171,8 @@
             </div>
         </div>
     </div>
+@endsection
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-</body>
-</html>
+@section('scripts')
+    @vite(['resources/js/gudang.js'])
+@endsection

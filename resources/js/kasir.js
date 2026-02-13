@@ -5,40 +5,15 @@
 
 import "./bootstrap";
 import "./api.js";
+import { getAuthHeaders, formatRupiah, showError, hideError } from "./utils.js";
 
 const apiProducts = "/api/products";
 const apiOrder = "/api/buat-pesanan";
 const apiCompleteOrder = "/api/orders";
 
-const getAuthHeaders = () =>
-    typeof window !== "undefined" && window.getAuthHeaders
-        ? window.getAuthHeaders()
-        : {};
-
 let cart = [];
 let productsDB = [];
 let lastOrderId = null;
-
-const formatRupiah = (angka) =>
-    new Intl.NumberFormat("id-ID", {
-        style: "currency",
-        currency: "IDR",
-        minimumFractionDigits: 0,
-    }).format(angka);
-
-// Error message display helpers
-const showError = (elementId, message) => {
-    const el = document.getElementById(elementId);
-    if (el) {
-        el.innerText = message;
-        el.classList.remove("d-none");
-    }
-};
-
-const hideError = (elementId) => {
-    const el = document.getElementById(elementId);
-    if (el) el.classList.add("d-none");
-};
 
 document.addEventListener("DOMContentLoaded", async () => {
     try {

@@ -52,6 +52,7 @@ class OrderService
 
                 $subtotal = $product->selling_price * $item['quantity'];
                 $subhpp = $this->calculateRealTimeHPP($product, $item['quantity']);
+                $hppPerUnit = $subhpp / $item['quantity'];
 
                 $totalPrice += $subtotal;
                 $totalHPP += $subhpp;
@@ -60,6 +61,7 @@ class OrderService
                     'product' => $product,
                     'quantity' => $item['quantity'],
                     'price' => $product->selling_price,
+                    'hpp_per_unit' => $hppPerUnit,
                 ];
 
                 // Deduct stock for each material
@@ -98,6 +100,7 @@ class OrderService
                     'product_id' => $item['product']->id,
                     'quantity' => $item['quantity'],
                     'price_per_unit' => $item['price'],
+                    'hpp_per_unit' => $item['hpp_per_unit'],
                 ]);
             }
 

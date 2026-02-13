@@ -42,24 +42,27 @@ class StockService
     }
 
     /**
-     * Reduce stock from material
+     * Reduce stock from material with pessimistic locking to prevent race condition
      *
      * @throws InsufficientStockException
      */
     public function reduceStock(array $data): Material
     {
-        $material = Material::findOrFail($data['material_id']);
+        return DB::transaction(function () use ($data) {
+            // Lock material row for update to prevent race condition
+            $material = Material::where('id', $data['material_id'])
+                ->lockForUpdate()
+                ->firstOrFail();
 
-        // Check if stock is sufficient
-        if ($material->current_stock < $data['amount']) {
-            throw new InsufficientStockException(
-                $material->name,
-                $material->current_stock,
-                $data['amount']
-            );
-        }
+            // Check if stock is sufficient (inside transaction with lock)
+            if ($material->current_stock < $data['amount']) {
+                throw new InsufficientStockException(
+                    $material->name,
+                    $material->current_stock,
+                    $data['amount']
+                );
+            }
 
-        return DB::transaction(function () use ($data, $material) {
             // Decrement stock
             $material->decrement('current_stock', $data['amount']);
 

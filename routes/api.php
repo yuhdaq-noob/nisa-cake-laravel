@@ -29,6 +29,9 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // Product Management
     Route::get('/products', [ProductController::class, 'index']);
+    Route::post('/products', [ProductController::class, 'store']);
+    Route::get('/products/{product}', [ProductController::class, 'show']);
+    Route::patch('/products/{product}', [ProductController::class, 'update']);
 
     // Material Management
     Route::get('/materials', [MaterialController::class, 'index']);

@@ -1,0 +1,37 @@
+/* Laporan page styles aligned to existing markup */
+
+#myChart {
+    max-height: 300px;
+}
+
+#searchInput,
+#filterWaktu {
+    border-radius: 6px;
+}
+
+#filterWaktu {
+    min-width: 160px;
+}
+
+#tabelLaporan td {
+    vertical-align: middle;
+}
+
+#tableTotalProfit {
+    color: #28a745;
+}
+
+.card-header .btn-group .dropdown-menu {
+    min-width: 160px;
+}
+
+@media (max-width: 768px) {
+    #myChart {
+        max-height: 240px;
+    }
+
+    #searchInput,
+    #filterWaktu {
+        width: 100% !important;
+    }
+}

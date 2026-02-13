@@ -1,0 +1,32 @@
+/* Kasir page styles aligned to existing markup */
+
+#totalDisplay {
+    color: #5d4037;
+}
+
+#tabelKeranjang td {
+    vertical-align: middle;
+}
+
+#tabelKeranjang tr:hover {
+    background-color: #fafafa;
+}
+
+#orderCompleteBox {
+    background-color: #f8f9fb;
+    border-color: #e5e7eb;
+}
+
+#orderCompleteBox .btn {
+    min-width: 140px;
+}
+
+#error_checkout {
+    letter-spacing: 0.2px;
+}
+
+@media (max-width: 768px) {
+    #totalDisplay {
+        font-size: 1.1rem;
+    }
+}

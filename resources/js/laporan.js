@@ -5,75 +5,25 @@
 
 import "./bootstrap";
 import "./api.js";
+import {
+    formatRupiah,
+    isToday,
+    isLast7Days,
+    isThisMonth,
+    isLastMonth,
+    isThisYear,
+    getAuthHeaders,
+} from "./utils.js";
 
 const apiUrl = "/api/reports";
 let allData = [];
 let myChart = null;
 
-const formatRupiah = (angka) => {
-    return new Intl.NumberFormat("id-ID", {
-        style: "currency",
-        currency: "IDR",
-        minimumFractionDigits: 0,
-    }).format(angka);
-};
-
-const isToday = (dateString) => {
-    const date = new Date(dateString);
-    const today = new Date();
-    return (
-        date.getDate() === today.getDate() &&
-        date.getMonth() === today.getMonth() &&
-        date.getFullYear() === today.getFullYear()
-    );
-};
-
-const isLast7Days = (dateString) => {
-    const date = new Date(dateString);
-    const today = new Date();
-    date.setHours(0, 0, 0, 0);
-    today.setHours(0, 0, 0, 0);
-
-    const diffTime = Math.abs(today - date);
-    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-    return diffDays <= 7 && date <= today;
-};
-
-const isThisMonth = (dateString) => {
-    const date = new Date(dateString);
-    const today = new Date();
-    return (
-        date.getMonth() === today.getMonth() &&
-        date.getFullYear() === today.getFullYear()
-    );
-};
-
-const isLastMonth = (dateString) => {
-    const date = new Date(dateString);
-    const today = new Date();
-    let targetMonth = today.getMonth() - 1;
-    let targetYear = today.getFullYear();
-    if (targetMonth < 0) {
-        targetMonth = 11;
-        targetYear = targetYear - 1;
-    }
-    return date.getMonth() === targetMonth && date.getFullYear() === targetYear;
-};
-
-const isThisYear = (dateString) => {
-    const date = new Date(dateString);
-    const today = new Date();
-    return date.getFullYear() === today.getFullYear();
-};
-
 // Load and initialize report data on page load
 document.addEventListener("DOMContentLoaded", async () => {
     try {
         const response = await fetch(apiUrl, {
-            headers:
-                typeof window !== "undefined" && window.getAuthHeaders
-                    ? window.getAuthHeaders()
-                    : {},
+            headers: getAuthHeaders(),
         });
         if (response.status === 401) {
             alert("Sesi login telah berakhir. Silakan login kembali.");
