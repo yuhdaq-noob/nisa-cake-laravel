@@ -4,11 +4,7 @@ import "./bootstrap";
 import "./utils.js";
 // Import API helper to ensure login/logout token utilities are bundled.
 import "./api.js";
-// Import page-specific scripts (modules are defensive and check DOM)
-import "./login.js";
-import "./gudang.js";
-import "./kasir.js";
-import "./laporan.js";
+// Page-specific scripts are loaded per-page via Blade @vite to avoid double-loading
 import { initUiLayer } from "./ui.js";
 
 document.addEventListener("DOMContentLoaded", () => {

@@ -188,7 +188,10 @@ function bindExportDropdown() {
 }
 
 function renderChart(data) {
-    const ctx = document.getElementById("myChart").getContext("2d");
+    const canvas = document.getElementById("myChart");
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
 
     let dailyGroups = {};
     data.forEach((item) => {
@@ -224,8 +227,14 @@ function renderChart(data) {
     const dataOmzet = sortedKeys.map((key) => dailyGroups[key].omzet);
     const dataProfit = sortedKeys.map((key) => dailyGroups[key].profit);
 
-    if (myChart) myChart.destroy();
-
+    if (myChart) {
+        try {
+            myChart.destroy();
+        } catch (e) {
+            // ignore
+        }
+        myChart = null;
+    }
     myChart = new Chart(ctx, {
         type: "line",
         data: {

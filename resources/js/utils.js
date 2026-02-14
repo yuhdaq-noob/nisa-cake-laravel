@@ -6,10 +6,17 @@
  * Get auth headers from localStorage if available.
  * Used across gudang.js, kasir.js, and laporan.js
  */
-export const getAuthHeaders = () =>
-    typeof window !== "undefined" && window.getAuthHeaders
-        ? window.getAuthHeaders()
-        : {};
+export const getAuthHeaders = () => {
+    if (typeof window !== "undefined" && window.getAuthHeaders) {
+        return window.getAuthHeaders();
+    }
+    // Fallback: ambil token langsung dari localStorage
+    const token =
+        typeof window !== "undefined" && window.localStorage
+            ? window.localStorage.getItem("auth_token")
+            : null;
+    return token ? { Authorization: `Bearer ${token}` } : {};
+};
 
 /**
  * Format number as Indonesian Rupiah currency.
