@@ -1,5 +1,7 @@
 <?php
 
+// FIXME: PERHITUNGAN
+
 namespace App\Http\Resources;
 
 use Illuminate\Http\Request;
@@ -28,6 +30,8 @@ class OrderResource extends JsonResource
             'customer_name' => $this->customer_name,
             // Alias agar kompatibel dengan front-end lama
             'customer' => $this->customer_name,
+            // FIXME: TIDAK DIPAKAI
+            // order_date tidak dipakai oleh UI saat ini (frontend menggunakan field 'date' dari created_at).
             'order_date' => $this->order_date?->format('Y-m-d H:i:s'),
             // Tanggal yang diformat untuk UI (Asia/Jakarta)
             'date' => $this->created_at?->timezone('Asia/Jakarta')->format('d M Y H:i'),
@@ -36,6 +40,7 @@ class OrderResource extends JsonResource
             // Alias agar kompatibel dengan front-end lama
             'total_omzet' => $this->total_price,
             'total_hpp' => $this->total_hpp,
+            // FIXME: PERHITUNGAN
             'profit' => $this->total_price - $this->total_hpp,
             'items_count' => $items ? $items->count() : null,
             'products' => $productsLabel,

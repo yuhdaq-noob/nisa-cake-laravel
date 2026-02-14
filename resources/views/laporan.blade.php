@@ -2,6 +2,31 @@
 @php($title = 'Laporan Keuangan')
 @php($active = 'laporan')
 
+{{-- FIXME: PERHITUNGAN --}}
+{{--
+    TODO:TAMBAHKAN KE TABEL MATERIALS DATABASE
+         {
+            KARDUS KUE,
+            MIKA KUE,
+            PLASTIK "termasuk ukuran" nanti pakai id ke untuk di produk sesuai id
+          }
+    TODO: TAMBAHKAN TABEL OVERHEADS DATABASE:
+        -GAS           {kapasitas gas/daya tahan gas(menit), harga gas per tube, },
+        -LISTRIK       {harga per kwh, rata rata pemakaian listrik per unit produk},
+        -TENAGA KERJA  {hitungan per jam},),
+
+    TODO: HAPUS UNIT DI MATERIAL DATABASE,
+
+    TODO: NAMBAH SEEDER TABEL OVERHEAD DATABASE + SEEDER MATERIALS DATABASE PACKAGING,
+
+    TODO: PISAHKAN CATEGORY PACKAGING DAN RAW MATERIAL DI MATERIALS DATABASE,
+
+    TODO: TAMBAHKAN CARD TABLE OVERHEAD DI LAPORAN,
+
+    TODO: LALU REFACTOR PERHITUNGAN HPP DENGAN RUMUS (BTK BUKAN BTKL)
+
+    --}}
+
 @section('content')
     <div class="flex flex-wrap items-center justify-between gap-3 mb-6">
         <div>

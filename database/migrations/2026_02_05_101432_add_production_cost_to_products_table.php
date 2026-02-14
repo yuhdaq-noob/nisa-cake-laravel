@@ -1,5 +1,9 @@
 <?php
 
+// FIXME: PERHITUNGAN
+// FIXME: TIDAK DIPAKAI
+// Kolom production_cost ada, tapi saat ini tidak dipakai untuk HPP otomatis maupun laporan.
+
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;

@@ -1,5 +1,7 @@
 <?php
 
+// FIXME: PERHITUNGAN
+
 namespace App\Http\Controllers;
 
 use App\Exceptions\InsufficientStockException;
@@ -11,6 +13,8 @@ use App\Models\MaterialPriceLog;
 use App\Services\StockService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class MaterialController extends Controller
 {
@@ -51,7 +55,7 @@ class MaterialController extends Controller
             ], 400);
 
         } catch (\Exception $e) {
-            \Log::error('Stock reduction failed: '.$e->getMessage());
+            Log::error('Stock reduction failed: '.$e->getMessage());
 
             return response()->json([
                 'status' => 'error',
@@ -65,6 +69,7 @@ class MaterialController extends Controller
      */
     public function updatePrice(UpdateMaterialPriceRequest $request, Material $material): JsonResponse
     {
+        // FIXME: PERHITUNGAN
         $unit = strtolower(trim((string) $material->unit));
         $conversionMap = [
             'gram' => ['unit_baku' => 'kg', 'factor' => 1000],
@@ -79,6 +84,9 @@ class MaterialController extends Controller
         if (array_key_exists($unit, $conversionMap)) {
             $unitBaku = $conversionMap[$unit]['unit_baku'];
             $factor = $conversionMap[$unit]['factor'];
+
+            // FIXME: PERHITUNGAN
+            // price_per_unit (unit kecil) = price_per_unit_baku / factor
             $pricePerUnit = $pricePerBaku / $factor;
         } else {
             $unitBaku = $material->unit;
@@ -92,7 +100,7 @@ class MaterialController extends Controller
 
         MaterialPriceLog::create([
             'material_id' => $material->id,
-            'user_id' => auth()->check() ? auth()->id() : null,
+            'user_id' => Auth::check() ? Auth::id() : null,
             'old_price_per_unit' => $oldPricePerUnit,
             'new_price_per_unit' => $material->price_per_unit,
             'old_price_per_unit_baku' => $oldPricePerUnitBaku,

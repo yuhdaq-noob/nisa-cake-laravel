@@ -1,5 +1,7 @@
 <?php
 
+// FIXME: PERHITUNGAN
+
 namespace App\Http\Controllers;
 
 use App\Exports\LaporanExport;
@@ -27,6 +29,8 @@ class ReportController extends Controller
     public function export(Request $request)
     {
         $format = $request->query('format', 'excel');
+        // FIXME: TIDAK DIPAKAI
+        // period & search sudah dibaca, tapi belum diterapkan untuk filter query export.
         $period = $request->query('period', 'all');
         $search = $request->query('search', '');
 

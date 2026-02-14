@@ -1,5 +1,7 @@
 <?php
 
+// FIXME: PERHITUNGAN
+
 namespace App\Services;
 
 use App\Enums\OrderStatus;
@@ -87,6 +89,8 @@ class OrderService
             // Create order
             $order = Order::create([
                 'customer_name' => $data['customer_name'],
+                // FIXME: TIDAK DIPAKAI
+                // order_date belum dipakai oleh UI (laporan memakai created_at->date).
                 'order_date' => now(),
                 'status' => OrderStatus::PENDING->value,
                 'total_price' => $totalPrice,
@@ -125,6 +129,13 @@ class OrderService
         foreach ($product->materials as $material) {
             $quantityNeeded = (float) $material->pivot->quantity_needed;
             $currentPrice = (float) ($material->price_per_unit_baku ?? $material->price_per_unit ?? 0);
+
+            // FIXME: PERHITUNGAN
+            // HPP/unit = Σ(quantity_needed × price_per_unit_baku)
+            // FIXME: TIDAK DIPAKAI
+            // Saat ini quantity_needed dianggap sudah “satuannya cocok” dengan price_per_unit_baku.
+            // Jika quantity_needed tersimpan dalam unit resep (gram/ml) tetapi unit_baku adalah (kg/liter),
+            // konversi unit belum diterapkan di sini.
 
             $hppPerUnit += $quantityNeeded * $currentPrice;
         }

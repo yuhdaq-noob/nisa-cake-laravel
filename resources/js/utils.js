@@ -2,6 +2,8 @@
  * Shared utility functions used across multiple modules.
  */
 
+// FIXME: PERHITUNGAN
+
 /**
  * Get auth headers from localStorage if available.
  * Used across gudang.js, kasir.js, and laporan.js

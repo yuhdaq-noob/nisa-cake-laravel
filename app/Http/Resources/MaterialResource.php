@@ -1,5 +1,7 @@
 <?php
 
+// FIXME: PERHITUNGAN
+
 namespace App\Http\Resources;
 
 use Illuminate\Http\Request;
@@ -18,6 +20,7 @@ class MaterialResource extends JsonResource
             'price_per_unit_baku' => $this->price_per_unit_baku,
             'current_stock' => $this->current_stock,
             'min_stock_level' => $this->min_stock_level,
+            // FIXME: PERHITUNGAN
             'status' => $this->current_stock <= $this->min_stock_level ? 'Low Stock' : 'OK',
             'created_at' => $this->created_at?->format('Y-m-d H:i:s'),
         ];

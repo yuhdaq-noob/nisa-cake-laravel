@@ -1,5 +1,7 @@
 <?php
 
+// FIXME: PERHITUNGAN
+
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
@@ -16,6 +18,8 @@ class StoreProductRequest extends FormRequest
         return [
             'name' => 'required|string|max:255|unique:products,name',
             'selling_price' => 'required|numeric|min:0|max:99999999.99',
+            // FIXME: TIDAK DIPAKAI
+            // production_cost belum dipakai untuk HPP otomatis/laporan (HPP dihitung dari BOM + overhead_cost_per_unit).
             'production_cost' => 'nullable|numeric|min:0|max:99999999.99',
             'overhead_cost_per_unit' => 'nullable|numeric|min:0|max:99999999.99',
             'description' => 'nullable|string|max:1000',

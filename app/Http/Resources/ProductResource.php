@@ -1,5 +1,7 @@
 <?php
 
+// FIXME: PERHITUNGAN
+
 namespace App\Http\Resources;
 
 use Illuminate\Http\Request;
@@ -14,7 +16,11 @@ class ProductResource extends JsonResource
             'name' => $this->name,
             'description' => $this->description,
             'selling_price' => $this->selling_price,
+            // FIXME: TIDAK DIPAKAI
+            // production_cost & profit_per_unit saat ini tidak dipakai oleh halaman kasir/gudang/laporan.
+            // Perhitungan laporan pakai orders.total_hpp vs orders.total_price.
             'production_cost' => $this->production_cost,
+            // FIXME: PERHITUNGAN
             'profit_per_unit' => $this->selling_price - $this->production_cost,
             'materials' => MaterialForProductResource::collection($this->whenLoaded('materials')),
             'created_at' => $this->created_at?->format('Y-m-d H:i:s'),

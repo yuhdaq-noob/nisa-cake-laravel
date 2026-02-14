@@ -1,5 +1,7 @@
 <?php
 
+// FIXME: PERHITUNGAN
+
 use App\Http\Controllers\InventoryController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\MaterialController;
@@ -23,6 +25,8 @@ Route::middleware(['auth'])->group(function () {
 
     // API Endpoints
     Route::post('/materials/reduce', [MaterialController::class, 'reduceStock'])->name('materials.reduce');
+    // FIXME: TIDAK DIPAKAI
+    // UI gudang menggunakan endpoint API /api/stocks/add (via gudang.js), bukan web route ini.
     Route::post('/stocks/add', [StockController::class, 'store'])->name('stocks.add');
     Route::get('/laporan/export', [ReportController::class, 'export'])->name('laporan.export');
 });
