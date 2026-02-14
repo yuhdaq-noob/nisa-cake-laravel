@@ -34,13 +34,13 @@ class OrderSeeder extends Seeder
 
         $this->command->info('Membuat dummy orders...');
 
-        // Buat 50 order dengan items di dalamnya
+        // Buat 170 order dengan items di dalamnya
         Order::factory(170)
             ->completed()  // Gunakan orders yang sudah selesai (untuk laporan)
             ->create()
             ->each(function ($order) use ($products) {
                 // Setiap order memiliki 1-3 item
-                $itemCount = fake()->numberBetween(1, 3);
+                $itemCount = fake()->numberBetween(1, 2);
                 $totalPrice = 0;
                 $totalHpp = 0;
 

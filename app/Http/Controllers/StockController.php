@@ -8,6 +8,7 @@ use App\Models\StockLog;
 use App\Services\StockService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Illuminate\Support\Facades\Log;
 
 class StockController extends Controller
 {
@@ -33,7 +34,7 @@ class StockController extends Controller
             ], 201);
 
         } catch (\Exception $e) {
-            \Log::error('Stock addition failed: '.$e->getMessage());
+            Log::error('Stock addition failed: '.$e->getMessage());
 
             return response()->json([
                 'status' => 'error',
