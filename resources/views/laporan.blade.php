@@ -104,7 +104,3 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     @vite(['resources/js/laporan.js'])
 @endsection
-
-@section('scripts')
-    @vite(['resources/js/laporan.js'])
-@endsection
