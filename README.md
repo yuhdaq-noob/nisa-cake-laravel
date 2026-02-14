@@ -175,28 +175,15 @@ nisa-app/
 │   │   ├── kasir.js        # Logika halaman kasir (POS)
 │   │   └── laporan.js      # Logika halaman laporan keuangan (tabel + chart)
 │   └── views/              # Blade templates (layouts, components, pages)
-├── routes/
-│   ├── api.php             # API routes
-│   └── web.php             # Web routes
-├── DOKUMENTASI_TEKNIS.md   # Dokumen teknis (format skripsi/presentasi)
-└── READY_FOR_PUBLICATION.md# Checklist publikasi repository
+└──  routes/
+    ├── api.php             # API routes
+    └── web.php             # Web routes
+
 ```
 
 ---
 
 ## Dokumentasi
-
-### Dokumentasi Lengkap
-
-Lihat **[DOKUMENTASI_TEKNIS.md](DOKUMENTASI_TEKNIS.md)** untuk dokumentasi lengkap mencakup:
-
-- Latar belakang & tujuan penelitian
-- Spesifikasi database & ERD
-- Arsitektur aplikasi & design patterns
-- Alur bisnis proses
-- API endpoints & payload examples
-- Testing & deployment guide
-- FAQ & troubleshooting
 
 ### Changelog
 
